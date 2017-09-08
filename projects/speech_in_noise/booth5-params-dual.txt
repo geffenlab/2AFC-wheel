@@ -1,0 +1,2 @@
+boothID,comport,reward_duration(s),debounce(ms),device,channels,samplerate,filterfile,amplification,stimFunc
+booth5,COM4,.03,1000,Lynx E44,[1 2],192e3,booth5-170727-wdsfilter-192kHz,10/11,makeSpeechInNoise(params)

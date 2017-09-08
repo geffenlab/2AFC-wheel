@@ -59,22 +59,17 @@ handles.output = hObject;
 guidata(hObject, handles);
 
 % Populate the listboxes
-mice = dir('E:\Data\');
-mice(~[mice.isdir])=[]; 
-mice(strcmp({mice.name},'.'))=[]; 
-mice(strcmp({mice.name},'..'))=[]; 
-mice(strcmp({mice.name},'projects'))=[];
-mice(strcmp({mice.name},'stimuli'))=[];
-mice(strcmp({mice.name},'mouseArchive'))=[];
-mice = {mice.name}';
-set(handles.listbox1,'String',mice);
+global baseDir
+%baseDir = ['..'];
+baseDir = ['.'];
 
-projects = dir('E:\Data\projects\');
+
+projects = dir([baseDir filesep 'projects']);
 projects(~[projects.isdir])=[]; 
 projects(strcmp({projects.name},'.'))=[]; 
 projects(strcmp({projects.name},'..'))=[]; 
 projects = {projects.name}';
-set(handles.listbox2,'String',projects);
+set(handles.listbox1,'String',projects);
 
 % UIWAIT makes runMouseRun_GUI wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -93,6 +88,24 @@ varargout{1} = handles.output;
 
 % MOUSE LIST BOX
 function listbox1_Callback(hObject, eventdata, handles) %#ok<*INUSD,*DEFNU>
+global baseDir
+contents = cellstr(get(hObject,'String'));
+projSel = contents{get(hObject,'Value')};
+
+mice = dir([baseDir filesep 'projects' filesep projSel]);
+mice(~[mice.isdir]) = [];
+mice(strcmp({mice.name},'.'))=[]; 
+mice(strcmp({mice.name},'..'))=[]; 
+mice = {mice.name}';
+set(handles.listbox2,'String',mice);
+
+stim = dir([baseDir filesep 'projects' filesep projSel filesep '*params*']);
+stim([stim.isdir]) = [];
+stim = {stim.name}';
+set(handles.listbox3,'Value',1);
+set(handles.listbox3,'String',stim);
+
+
 
 function listbox1_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
@@ -103,12 +116,7 @@ end
 
 % SELECT PROJECT
 function listbox2_Callback(hObject, eventdata, handles) %#ok<*INUSL>
-contents = cellstr(get(hObject,'String'));
-projSel = contents{get(hObject,'Value')};
-stim = dir(['E:\Data\projects\' projSel '\*.mat']);
-stim = {stim.name}';
-set(handles.listbox3,'Value',1);
-set(handles.listbox3,'String',stim);
+
 
 
 % --- Executes during object creation, after setting all properties.
@@ -139,17 +147,22 @@ end
 
 % START
 function pushbutton1_Callback(hObject, eventdata, handles)
+global baseDir
+
 blockVector = str2num(get(handles.edit1,'String')')';
 contents = cellstr(get(handles.listbox3,'String'));
 parameterFile = contents{get(handles.listbox3,'Value')};
-contents = cellstr(get(handles.listbox2,'String'));
-project = contents{get(handles.listbox2,'Value')};
 contents = cellstr(get(handles.listbox1,'String'));
-mouse = contents{get(handles.listbox1,'Value')};
+project = contents{get(handles.listbox1,'Value')};
+contents = cellstr(get(handles.listbox2,'String'));
+mouse = contents{get(handles.listbox2,'Value')};
 
 switch project
     case 'wheel_toneClouds'
-        wheel_behaviour_TESTINGgui(mouse,project,parameterFile)
-    case 'gainBehavior'
+        wheel_behaviour_TESTINGgui(mouse,project,parameterFile);
+    case 'speech_in_noise'
+        wheel_2AFC(mouse,baseDir,project,parameterFile);
+    case 'habituation'
+        wheel_2AFC_habituation(mouse,baseDir,project,parameterFile);
         
 end

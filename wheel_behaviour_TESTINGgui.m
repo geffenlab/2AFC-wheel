@@ -1,4 +1,4 @@
-% Behaviour task with wheel response
+edit% Behaviour task with wheel response
 function wheel_behaviour_TESTINGgui(mouse,project,parameterFile)
 % run wheel_interruptor_test
 % clear all %#ok<CLALL>

@@ -57,7 +57,32 @@ void setup() {
     // Wait for matlab to send specific character to arduino
     a = Serial.read();
   }
-    Serial.flush();
+  Serial.flush();
+
+  // retrieve parameters from matlab
+  int done = 0;
+  int val[3];
+  int cnt = 0;
+  while (!done) {
+    while (Serial.available() > 0) {
+      val[cnt] = Serial.parseInt();
+      cnt++;
+      if (cnt > 2) {
+        done = 1;
+        rewardTime = val[0];
+        timeOut = val[1];
+        rotaryDebounce = val[2];
+
+        Serial.print("REWTIME ");
+        Serial.println(val[0]);
+        Serial.print("TOTIME ");
+        Serial.println(val[1]);
+        Serial.print("DEBOUNCE ");
+        Serial.println(val[2]);
+        break;
+      }
+    }
+  }
 
 
 
@@ -84,35 +109,35 @@ void loop() {
 
     case 1: // RECEIVE TRIAL TYPE FROM MATLAB
       // receive input from matlab saying the type of trial it is
-    //  Serial.read();
+      //  Serial.read();
       if (Serial.available() > 0) {
         //   Serial.println("arduinoCase1");
         // read the incoming byte:
-      // trialType = Serial.parseFloat();
-      //giveTO = Serial.parseFloat();
+        // trialType = Serial.parseFloat();
+        //giveTO = Serial.parseFloat();
 
-          trialType = Serial.parseInt();
-          giveTO = Serial.parseInt();
+        trialType = Serial.parseInt();
+        giveTO = Serial.parseInt();
 
-                   // tell matlab received
-                  
-                   Serial.println(trialType);
-            //       Serial.println(giveTO);
-             holdTime = random(1000,1500);
-          bstate = 2;
-        }
+        // tell matlab received
 
-        break;
+        Serial.println(trialType);
+        //       Serial.println(giveTO);
+        holdTime = random(1000, 1500);
+        bstate = 2;
+      }
 
-      case 2: // MONITOR WHEEL INPUT UNTIL NOT MOVED FOR HOLDTIME DURATION
-        //  send serial com to matlab to intiate sound presentation
+      break;
+
+    case 2: // MONITOR WHEEL INPUT UNTIL NOT MOVED FOR HOLDTIME DURATION
+      //  send serial com to matlab to intiate sound presentation
 
 
-        //   Serial.println("arduinoCase2");
-        oldRotaryPos = encoderValue;
-        bstate1timer = 0;
-        t1 = millis();
-        while ((long) (bstate1timer - t1) < holdTime) {
+      //   Serial.println("arduinoCase2");
+      oldRotaryPos = encoderValue;
+      bstate1timer = 0;
+      t1 = millis();
+      while ((long) (bstate1timer - t1) < holdTime) {
         // wait for the mouse to not move the wheel for the hold time duration
         bstate1timer = millis();
         rotaryPos = encoderValue;
@@ -187,10 +212,10 @@ void loop() {
           Serial.println("start");
           bstate = 1; // RETURN TO BEGINNING
 
-        // IF TRIAL TYPE IS RANDOM REWARD
-        } else if (trialType == 99) {         
-          r = random(0,1); // if this is (0,1) then there will be no rewards, if it is (0,2) there will be random rewards
-          if (r>0.5) {
+          // IF TRIAL TYPE IS RANDOM REWARD
+        } else if (trialType == 99) {
+          r = random(0, 1); // if this is (0,1) then there will be no rewards, if it is (0,2) there will be random rewards
+          if (r > 0.5) {
             digitalWrite(solenoidOut, HIGH); //open the solenoid
             delay(rewardTime);
             digitalWrite(solenoidOut, LOW); //close the solenoid
@@ -198,7 +223,7 @@ void loop() {
           Serial.println (99, DEC); //Serial.println (r, DEC);
           Serial.println("start");
           bstate = 1; // RETURN TO BEGINNING
-          
+
 
           //CORRECT TRIAL
         } else if (trialType == 2) {
@@ -229,9 +254,9 @@ void loop() {
           bstate = 1; // RETURN TO BEGINNING
 
           // IF TRIAL TYPE IS RANDOM REWARD
-        } else if (trialType == 99) {         
-          r = random(0,1); // if this is (0,1) then there will be no rewards, if it is (0,2) there will be random rewards
-          if (r>0.5) {
+        } else if (trialType == 99) {
+          r = random(0, 1); // if this is (0,1) then there will be no rewards, if it is (0,2) there will be random rewards
+          if (r > 0.5) {
             digitalWrite(solenoidOut, HIGH); //open the solenoid
             delay(rewardTime);
             digitalWrite(solenoidOut, LOW); //close the solenoid
