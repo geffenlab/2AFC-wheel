@@ -4,7 +4,7 @@ params.taskType = 'SPINhab';
 % booth parameters
 params.boothID = 'booth6';
 params.com = 'COM5';
-params.rewardDuration = 15;
+params.rewardDuration = 20;
 params.rotaryDebounce = 5;
 params.device = '2- Lynx E44';
 params.channel = [1 2];
@@ -21,7 +21,7 @@ load([params.filtdir filesep params.filtFile]);
 params.filt = FILT;
 
 % task parameters
-params.holdDuration       = 500;
+params.holdDuration       = 350;
 params.timeoutDuration    = 5000;
 
 

@@ -47,6 +47,7 @@ turnGood = tone(8000,3/2*pi,0.1,params.fs)/10;
 turnGood = envelope_CA(turnGood,.005,params.fs);
 turnGood = conv(turnGood,params.filt,'same');
 turnGood = [turnGood; turnGood];
+turnGood = zeros(size(turnGood));
 
 % initialize audio buffer
 queueOutput(s,turnGood'.*params.ampF,params.device);

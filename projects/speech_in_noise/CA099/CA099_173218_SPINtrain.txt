@@ -1,0 +1,1 @@
+trial trialType response stillTime stimOnset stimOffset respTime correctionTrial correct

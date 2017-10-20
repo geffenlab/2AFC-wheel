@@ -1,10 +1,10 @@
 % task
 params.taskType = 'SPINtrain';
 
-% booth parameters
+% booth parameters34
 params.boothID = 'booth5';
 params.com = 'COM4';
-params.rewardDuration = 10;
+params.rewardDuration = 15;
 params.rotaryDebounce = 5;
 params.device = 'Lynx E44';
 params.channel = [1 2];
@@ -22,21 +22,21 @@ params.filt = FILT;
 params.nTones = 34;
 params.fRange = [1e3 50e3];
 params.freqs = logspace(log10(1000),log10(50e3),params.nTones);
-params.mu = 50;
-params.sd = [7.5];
+params.mu = 30;
+params.sd = [10];
 params.rampDuration = .001;
 params.chordDuration = .005;
 params.blockDuration = 3;
 params.baseAmplitude = .1;
 params.speechOffset = 1;
 params.jitter = .5;
-params.gain = 3;
+params.gain = 2;
 params.stimPath = 'D:\stimuli\speech_in_noise';
 params.stimFunc = 'makeSpeechInNoise(params,tt);';
 params.noiseFile = [params.stimPath filesep params.boothID ...
-    '-' num2str(params.sd) 'filteredNoise.wav'];
+    '-' num2str(params.mu) '-' num2str(params.sd) '-filteredNoise.wav'];
 params.speechFile = [params.stimPath filesep params.boothID ...
-    '-filteredSpeech.mat'];
+    '-' num2str(params.gain) '-filteredSpeech.mat'];
 
 % task parameters
 params.holdDuration       = 1.5;

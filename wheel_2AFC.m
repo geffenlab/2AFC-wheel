@@ -141,6 +141,8 @@ while ~flag
         fprintf('\tRT: %g\n', ...
             (str2double(responseTime)-str2double(soundOffset))/1e6);
         
+        pause(.2)
+                
         % plot here
         smoothing = 30;
         resp(trialNumber)=str2double(responseOutcome);
@@ -160,7 +162,7 @@ while ~flag
             nb3 = zeros(1,length(noiseBurstL));
             if strcmp(params.device,'NIDAQ') || contains(params.device,'Lynx E44')
                 if s.IsRunning
-                    stop(s);
+                    wait(s);
                 end
             end
             queueOutput(s,[noiseBurstL; noiseBurstL]'.*params.ampF,params.device);
@@ -181,7 +183,7 @@ while ~flag
         % make sure we're ready for the next trial
         if strcmp(params.device,'NIDAQ') || contains(params.device,'Lynx E44')
             if s.IsRunning
-                stop(s);
+                wait(s);
             end
         end
         
