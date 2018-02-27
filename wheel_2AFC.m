@@ -11,17 +11,17 @@ cd(baseDir);
 params.basePath = pwd;
 params.projPath = [params.basePath filesep 'projects' filesep project];
 params.paramFile = [params.projPath filesep parameterFile];
-params.hexFile = [params.basePath filesep 'hexFiles' filesep 'wheel_interrupter_test2.ino.hex'];
+params.hexFile = [params.basePath filesep 'hexFiles' filesep 'wheel_interrupter_test3.ino.hex'];
 params.dataPath = [params.projPath filesep mouse];
 params.sessID = datestr(now,'YYMMDD');
 
 % load parameters
 if contains(parameterFile,'.txt')
     % load text file
-    [params fs] = loadParameters(paramFile);
+    [params fs] = loadParameters(params.paramFile);
 elseif contains(parameterFile,'.mat')
     % load mat file
-    load(paramFile);
+    load(params.paramFile);
 elseif contains(parameterFile,'.m')
     % run script
     run(params.paramFile);
@@ -82,6 +82,9 @@ while ~flag
             correctionTrial=0;
             tt = trialType(ttCounter);
             cd(params.projPath);
+            if exist('stimInfo','var')
+                stimInfo.trialType = tt;
+            end
             [stim events] = eval(params.stimFunc);
             cd(params.basePath);
             rewardType =  params.rewardContingency(tt);
@@ -141,13 +144,9 @@ while ~flag
         fprintf('\tRT: %g\n', ...
             (str2double(responseTime)-str2double(soundOffset))/1e6);
         
-        pause(.2)
+%         pause(.25)
                 
-        % plot here
-        smoothing = 30;
-        resp(trialNumber)=str2double(responseOutcome);
-        respTime(trialNumber) = (str2double(responseTime)-str2double(soundOffset))/1e6;
-        updateGraph(trialNumber, resp, respTime, smoothing);
+      
         
         % determine next trialType
         if str2double(responseOutcome)==1 || giveTO==0 % if correct or trialType requires no timeout
@@ -173,12 +172,21 @@ while ~flag
             end
         end
         
+          % plot here
+        smoothing = 30;
+        resp(trialNumber)=str2double(responseOutcome);
+        respTime(trialNumber) = (str2double(responseTime)-str2double(soundOffset))/1e6;
+        updateGraph(trialNumber, resp, respTime, smoothing);
+        
         % log the trial info
         %fprintf(fid,'trial trialType response stillTime stimOnset stimOffset respTime correctionTrial correct\n');
         
         fprintf(fid,'%03d %i %i %g %g %g %g %i\n',trialNumber, tt, wheelDirection, ...
             str2double(mouseStillTime),str2double(soundOnset), str2double(soundOffset), ...
             str2double(responseTime),correctionTrial,str2double(responseOutcome));
+        
+        % save trial type to a vector
+%         TrialType(trialNumber) = tt;
         
         % make sure we're ready for the next trial
         if strcmp(params.device,'NIDAQ') || contains(params.device,'Lynx E44')
@@ -198,6 +206,7 @@ while ~flag
     end
 end
 
+fprintf('\n\nPercent correct: %02.2f\n',mean(resp));
 delete(instrfindall)
 fclose(fid)
 %behSessionInfo(fn);

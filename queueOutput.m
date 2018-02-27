@@ -1,4 +1,4 @@
-function queueOutput(s,stim,device)
+ function queueOutput(s,stim,device)
 
 isNIDAQ = strcmp(device,'NIDAQ');
 isLYNX = contains(device,'Lynx E44');

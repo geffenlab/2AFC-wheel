@@ -159,7 +159,8 @@ mouse = contents{get(handles.listbox2,'Value')};
 
 switch project
     case 'wheel_toneClouds'
-        wheel_behaviour_TESTINGgui(mouse,project,parameterFile);
+        %wheel_behaviour_TESTINGgui(mouse,project,parameterFile);
+        wheel_2AFC(mouse,baseDir,project,parameterFile);
     case 'speech_in_noise'
         wheel_2AFC(mouse,baseDir,project,parameterFile);
     case 'habituation'

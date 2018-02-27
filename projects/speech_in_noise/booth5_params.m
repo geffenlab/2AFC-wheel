@@ -4,7 +4,7 @@ params.taskType = 'SPINtrain';
 % booth parameters34
 params.boothID = 'booth5';
 params.com = 'COM4';
-params.rewardDuration = 15;
+params.rewardDuration = 20;
 params.rotaryDebounce = 5;
 params.device = 'Lynx E44';
 params.channel = [1 2];
