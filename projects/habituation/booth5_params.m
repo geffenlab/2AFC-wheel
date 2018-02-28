@@ -1,5 +1,5 @@
 % task
-params.taskType = 'SPINhab';
+params.taskType = 'wheelhab';
 
 % booth parameters
 params.boothID = 'booth5';

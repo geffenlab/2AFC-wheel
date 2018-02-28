@@ -11,7 +11,7 @@ cd(baseDir);
 params.basePath = pwd;
 params.projPath = [params.basePath filesep 'projects' filesep project];
 params.paramFile = [params.projPath filesep parameterFile];
-params.hexFile = [params.basePath filesep 'hexFiles' filesep 'wheel_habituation2.ino.hex'];
+params.hexFile = [params.basePath filesep 'hexFiles' filesep 'wheel_habituation3.ino.hex'];
 params.dataPath = [params.projPath filesep mouse];
 params.sessID = datestr(now,'YYMMDD');
 

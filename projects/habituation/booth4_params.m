@@ -3,7 +3,7 @@ params.taskType = 'toneCloudHab';
 
 % booth parameters
 params.boothID = 'booth4';
-params.com = 'COM4';
+params.com = 'COM3';
 params.rewardDuration = 15;
 params.rotaryDebounce = 5;
 params.device = 'Lynx E44';

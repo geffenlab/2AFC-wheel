@@ -7,7 +7,7 @@ int solenoidOut = 9;
 
 // IMPORTANT VARIABLES
 int rotaryDebounce = 5; // arbitrary number
-int durSopen = 15;  // duration of solenoid opening ms
+int rewardTime = 50;  // duration of solenoid opening ms
 int holdTime = 350;   // how long mouse must wait before trial starts ms
 
 volatile int lastEncoded = 0;
@@ -37,7 +37,7 @@ int timeOut = 5000;
 int trialType;
 long oldRotaryPos = 0;
 int start = 1;
-int count=0;
+int count = 0;
 
 void setup() {
   //  pinMode (rotaryInputA, INPUT);
@@ -52,7 +52,35 @@ void setup() {
     // Wait for matlab to send specific character to arduino
     a = Serial.read();
   }
-//  Serial.flush();
+  //Serial.flush();
+  Serial.println("ready");
+
+  // retrieve parameters from matlab
+  int done = 0;
+  int val[3];
+  int cnt = 0;
+  while (!done) {
+    while (Serial.available() > 0) {
+      val[cnt] = Serial.parseInt();
+      Serial.println(val[cnt]);
+      cnt++;
+      Serial.println(cnt);
+      if (cnt > 2) {
+        done = 1;
+        rewardTime = val[0];
+        holdTime = val[1];
+        rotaryDebounce = val[2];
+
+        Serial.print("REWTIME ");
+        Serial.println(val[1]);
+        Serial.print("TOTIME ");
+        Serial.println(val[2]);
+        Serial.print("DEBOUNCE ");
+        Serial.println(val[3]);
+        break;
+      }
+    }
+  }
 
 
 
@@ -81,7 +109,7 @@ void loop() {
   //  Serial.println("arduinoCase2");
   switch (hState) {
     case 1:
-Serial.println("state1");
+
       oldRotaryPos = encoderValue;
       bstate1timer = 0;
       t1 = millis();
@@ -100,52 +128,52 @@ Serial.println("state1");
       break;
 
     case 2:
-Serial.println("state2");
-              Serial.println("HoldTime");
-             //Serial.print("\t");
-      Serial.println(oldRotaryPos);
-   //   while (oldRotaryPos == rotaryPos) {
-           while (rotaryPos < oldRotaryPos+rotaryDebounce & rotaryPos > oldRotaryPos-rotaryDebounce) {
+
+      //        Serial.print("HoldTime");
+      //        Serial.print("\t");
+      //      Serial.println(oldRotaryPos);
+      //while (oldRotaryPos == rotaryPos) {
+      while (rotaryPos < oldRotaryPos + rotaryDebounce & rotaryPos > oldRotaryPos - rotaryDebounce) {
         rotaryPos = encoderValue;
       }
-      Serial.println(LR);
-      Serial.println(rotaryPos);
-      
+      //      Serial.println(LR);
+      //      Serial.println(rotaryPos);
+
       // Give reward if correct direction else return to hstate1
-      
+
       if (rotaryPos < oldRotaryPos && LR == 1) {  // if moved right
         time = micros();
         Serial.println(time);
         digitalWrite(solenoidOut, HIGH); //open the solenoid
-        delay(durSopen);
+        delay(rewardTime);
         digitalWrite(solenoidOut, LOW); //close the solenoid
         Serial.println(rotaryPos);
-        count = count+1;
+        count = count + 1;
         Serial.println(count);
         LR = 0;
-        
+
       } else if (rotaryPos > oldRotaryPos && LR == 0) { // if moved left
         time = micros();
         Serial.println(time);
         digitalWrite(solenoidOut, HIGH); //open the solenoid
-        delay(durSopen);
+        delay(rewardTime);
         digitalWrite(solenoidOut, LOW); //close the solenoid
         LR = 1;
         Serial.println(rotaryPos);
-        count = count+1;
+        count = count + 1;
         Serial.println(count);
       } else if (LR == 2) {
         time = micros();
         Serial.println(time);
         digitalWrite(solenoidOut, HIGH); //open the solenoid
-        delay(durSopen);
+        delay(rewardTime);
         digitalWrite(solenoidOut, LOW); //close the solenoid
         LR = (rotaryPos < oldRotaryPos);
         Serial.println(rotaryPos);
-        count = count+1;
+        count = count + 1;
         Serial.println(count);
       }
-      
+
       t1 = millis();
       hState = 1;
 
