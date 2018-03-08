@@ -7,7 +7,7 @@ int solenoidOut = 9;
 
 // IMPORTANT VARIABLES
 int rotaryDebounce = 5; // arbitrary number
-int rewardTime = 50;  // duration of solenoid opening ms
+int rewardTime = 75;  // duration of solenoid opening ms
 int holdTime = 350;   // how long mouse must wait before trial starts ms
 
 volatile int lastEncoded = 0;
