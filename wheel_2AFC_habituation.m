@@ -101,6 +101,8 @@ while ~flag
     end
 end
 
+delete(instrfindall)
+delete(p);
 disp('Done');
 
 
