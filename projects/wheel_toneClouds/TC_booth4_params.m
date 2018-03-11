@@ -17,14 +17,14 @@ params.taskType = 'TCtrain';
 
 
 % booth specific parameters
-params.boothID = 'booth4';
+params.boothID = 'booth2';
 params.com = 'COM3';
-params.rewardDuration = 25;
+params.rewardDuration = 30;
 params.rotaryDebounce = 5;
 params.device = '2- Lynx E44';
 params.channel = [1 2];
 params.fs = 192e3;
-params.filtFile = 'booth4-170727-wdsfilter-192kHz';
+params.filtFile = 'booth2-170727-wdsfilter-192kHz';
 params.ampF = 10/11;
 
 % filter

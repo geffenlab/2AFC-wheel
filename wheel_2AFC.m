@@ -200,7 +200,7 @@ while ~flag
         [~,~,keyCode] = KbCheck;
         if sum(keyCode) == 1
             if strcmp(KbName(keyCode),'ESCAPE')
-                flag = TRUE;
+                flag = true;
             end
         end
     end
