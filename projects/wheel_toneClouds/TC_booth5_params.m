@@ -19,7 +19,7 @@ params.taskType = 'TCtrain';
 % booth specific parameters
 params.boothID = 'booth5';
 params.com = 'COM3';
-params.rewardDuration = 20;
+params.rewardDuration = 15;
 params.rotaryDebounce = 5;
 params.device = 'Lynx E44';
 params.channel = [1 2];
