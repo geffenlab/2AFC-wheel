@@ -69,7 +69,7 @@ trialNumber = 0;
 newTrial = 1;
 ttCounter = 1;
 ctCounter = 0; % correction trial counter
-flag = 0;
+flag = false;
 
 while ~flag
     out = serialRead(p);
@@ -200,7 +200,7 @@ while ~flag
         [~,~,keyCode] = KbCheck;
         if sum(keyCode) == 1
             if strcmp(KbName(keyCode),'ESCAPE')
-                flag = 1;
+                flag = TRUE;
             end
         end
     end
