@@ -4,9 +4,9 @@ params.taskType = 'wheelhab';
 % booth parameters
 params.boothID = 'booth5';
 params.com = 'COM4';
-params.rewardDuration = 15;
+params.rewardDuration = 20;
 params.rotaryDebounce = 5;
-params.device = 'Lynx E44';
+params.device = '2- Lynx E44';
 params.channel = [1 2];
 params.fs = 192e3;
 params.filtFile = 'booth5-170727-wdsfilter-192kHz';
