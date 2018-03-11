@@ -40,7 +40,7 @@ params.holdDuration       = 1.5;
 params.respDuration       = 1.2;
 params.timeoutDuration    = 5000;
 params.trialTypeRatios    = [50 50];
-params.rewardContingency  = [1 2];
+params.rewardContingency  = [2 1];
 params.timeOutContingency = [1 1];
 
 % fix some other things
