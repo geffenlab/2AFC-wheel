@@ -3,8 +3,8 @@ params.taskType = 'wheelhab';
 
 % booth parameters
 params.boothID = 'booth5';
-params.com = 'COM4';
-params.rewardDuration = 20;
+params.com = 'COM3';
+params.rewardDuration = 19;
 params.rotaryDebounce = 5;
 params.device = '2- Lynx E44';
 params.channel = [1 2];

@@ -17,9 +17,9 @@ params.taskType = 'TCtrain';
 
 
 % booth specific parameters
-params.boothID = 'booth5';
+params.boothID = 'booth4';
 params.com = 'COM3';
-params.rewardDuration = 20;
+params.rewardDuration = 25;
 params.rotaryDebounce = 5;
 params.device = 'Lynx E44';
 params.channel = [1 2];
@@ -40,7 +40,7 @@ params.holdDuration       = 1.5;
 params.respDuration       = 1.2;
 params.timeoutDuration    = 5000;
 params.trialTypeRatios    = [50 50];
-params.rewardContingency  = [1 2];
+params.rewardContingency  = [2 1];
 params.timeOutContingency = [1 1];
 
 % fix some other things

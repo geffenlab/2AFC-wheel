@@ -4,7 +4,7 @@ params.taskType = 'SPINhab';
 % booth parameters
 params.boothID = 'booth6';
 params.com = 'COM4';
-params.rewardDuration = 20;
+params.rewardDuration = 15;
 params.rotaryDebounce = 5;
 params.device = '2- Lynx E44';
 params.channel = [1 2];

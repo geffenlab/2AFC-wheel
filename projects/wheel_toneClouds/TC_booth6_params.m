@@ -1,10 +1,10 @@
-
+a = logspace(log10(5000),log10(40000),8); % tone clouds
 
 % stimulus info stuff
 stimInfo.stimFunction    = 'toneCloudGen'; % stimulus function
 stimInfo.tonePipDur      = 0.030;            % duration of each tone pip in cloud
 stimInfo.totalDur        = 1;                % total duration of each tone cloud
-stimInfo.cloudRange      = [5000 10000; 20000 40000];               % range of tones within the cloud
+stimInfo.cloudRange      = [a(1) a(2); a(end-1) a(end)]; % range of tones within the cloud
 stimInfo.nLogSteps       = 10;               % number of tones in the range
 stimInfo.envDur          = 0.005;            % duration of tone pip envelope
 stimInfo.tonePipRate     = 100;              % presentation rate in Hz (determines tone overlap)
@@ -18,8 +18,8 @@ params.taskType = 'TCtrain';
 
 % booth specific parameters
 params.boothID = 'booth6';
-params.com = 'COM5';
-params.rewardDuration = 30; % changed from [oldvalue]
+params.com = 'COM4';
+params.rewardDuration = 15; % changed from [oldvalue]
 params.rotaryDebounce = 5;
 params.device = '2- Lynx E44';
 params.channel = [1 2];
@@ -40,7 +40,7 @@ params.holdDuration       = 1.5;
 params.respDuration       = 1.2;
 params.timeoutDuration    = 5000;
 params.trialTypeRatios    = [50 50];
-params.rewardContingency  = [1 2];
+params.rewardContingency  = [2 1];
 params.timeOutContingency = [1 1];
 
 % fix some other things

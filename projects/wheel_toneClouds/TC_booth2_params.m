@@ -1,7 +1,7 @@
 a = logspace(log10(5000),log10(40000),8); % tone clouds
 
 % stimulus info stuff
-stimInfo.stimFunction    = 'toneCloudGen'; % stimulus function
+stimInfo.stimFunction    = 'toneCloudGen_CA'; % stimulus function
 stimInfo.tonePipDur      = 0.030;            % duration of each tone pip in cloud
 stimInfo.totalDur        = 1;                % total duration of each tone cloud
 stimInfo.cloudRange      = [a(1) a(2); a(end-1) a(end)]; % range of tones within the cloud
@@ -17,14 +17,14 @@ params.taskType = 'TCtrain';
 
 
 % booth specific parameters
-params.boothID = 'booth5';
+params.boothID = 'booth2';
 params.com = 'COM3';
-params.rewardDuration = 20;
+params.rewardDuration = 30;
 params.rotaryDebounce = 5;
 params.device = 'Lynx E44';
 params.channel = [1 2];
 params.fs = 192e3;
-params.filtFile = 'booth5-170727-wdsfilter-192kHz';
+params.filtFile = 'booth2-170727-wdsfilter-192kHz';
 params.ampF = 10/11;
 
 % filter

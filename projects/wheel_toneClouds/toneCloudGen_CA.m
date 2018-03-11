@@ -1,4 +1,4 @@
-function [stim events] = toneCloudGen_CA(stimInfo) % fs,tonePipDur,totalDur,cloudRange,nLogSteps,envDur,tonePipRate,toneLevel,FILT
+function [stim, events, seed] = toneCloudGen_CA(stimInfo) % fs,tonePipDur,totalDur,cloudRange,nLogSteps,envDur,tonePipRate,toneLevel,FILT
 
 % set variables
 % stimInfo.fs              = 4e5;              % sample rate
@@ -14,7 +14,8 @@ stimInfo.range      = stimInfo.cloudRange(stimInfo.trialType,:);
 
 
 % determine further variables
-stimInfo.index = round(exp(linspace(log(stimInfo.range(1)),log(stimInfo.range(2)),stimInfo.nLogSteps))); % frequency range
+stimInfo.index = round(logspace(log10(stimInfo.range(1)),log10(stimInfo.range(2)),stimInfo.nLogSteps)); % frequency range
+% stimInfo.index = round(exp(linspace(log(stimInfo.range(1)),log(stimInfo.range(2)),stimInfo.nLogSteps))); % frequency range
 stimInfo.nTones = stimInfo.totalDur*stimInfo.tonePipRate; % number of tones in stimulus
 atten = 70-stimInfo.toneLevel; % convert tone level to attenuation from 70 dB (filter is set to make sounds at 70 dB)
 
@@ -28,6 +29,8 @@ for ii=1:length(stimInfo.index)
 end
 
 % make stim
+seed = round(rand(1,1)*1000);
+rng(seed);
 r = randi(length(stimInfo.index),stimInfo.nTones,1); % randomly select tones from the range
 % stimInfo.order = r; % save order of tones ?
 tonePipOnsets = 1:round(stimInfo.totalDur*stimInfo.fs)/stimInfo.tonePipRate:round(stimInfo.totalDur*stimInfo.fs); % tone pip onsets
