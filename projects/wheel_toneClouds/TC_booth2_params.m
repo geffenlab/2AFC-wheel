@@ -1,7 +1,7 @@
 a = logspace(log10(5000),log10(40000),8); % tone clouds
 
 % stimulus info stuff
-stimInfo.stimFunction    = 'toneCloudGen_CA'; % stimulus function
+stimInfo.stimFunction    = 'toneCloudGen'; % stimulus function
 stimInfo.tonePipDur      = 0.030;            % duration of each tone pip in cloud
 stimInfo.totalDur        = 1;                % total duration of each tone cloud
 stimInfo.cloudRange      = [a(1) a(2); a(end-1) a(end)]; % range of tones within the cloud
