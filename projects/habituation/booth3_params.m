@@ -21,7 +21,7 @@ load([params.filtdir filesep params.filtFile]);
 params.filt = FILT;
 
 % task parameters
-params.holdDuration       = 350;
+params.holdDuration       = 500; % in ms
 params.timeoutDuration    = 5000;
 
 
