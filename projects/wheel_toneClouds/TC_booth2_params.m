@@ -1,4 +1,5 @@
-a = logspace(log10(5000),log10(40000),8); % tone clouds
+% a = logspace(log10(5000),log10(40000),8); % tone clouds
+a = 4000 * (2 .^ (([0:8-1])/2)); % tone clouds
 
 % stimulus info stuff
 stimInfo.stimFunction    = 'toneCloudGen'; % stimulus function
