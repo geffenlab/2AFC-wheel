@@ -9,7 +9,7 @@ stimInfo.cloudRange      = [a(1) a(2); a(end-1) a(end)]; % range of tones within
 stimInfo.nLogSteps       = 10;               % number of tones in the range
 stimInfo.envDur          = 0.005;            % duration of tone pip envelope
 stimInfo.tonePipRate     = 100;              % presentation rate in Hz (determines tone overlap)
-stimInfo.toneLevel       = 70;               % levels of tones in dB
+stimInfo.toneLevel       = 60;               % levels of tones in dB
 stimInfo.fs              = 192e3;
 
 % task specific stuff
