@@ -158,13 +158,6 @@ while ~flag
         if str2double(responseOutcome)==1 || giveTO==0 % if correct or trialType requires no timeout
             newTrial = 1;
             ctCounter = 0;
-             if strcmp(params.device,'NIDAQ') || contains(params.device,'Lynx E44')
-                if s.IsRunning
-                    wait(s);
-                end
-            end
-            queueOutput(s,[click; click]'.*params.ampF,params.device);
-            startOutput(s,params.device);
         elseif str2double(responseOutcome)==99
             newTrial = 1;
             ctCounter = 0;
