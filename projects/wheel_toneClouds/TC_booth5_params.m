@@ -27,7 +27,7 @@ params.device = 'ASIO Lynx';
 params.channel = [0 1];
 % params.channel = [1 2];
 params.fs = 192e3;
-params.filtFile = 'booth5-170727-wdsfilter-192kHz';
+params.filtFile = '170615_booth5_3k-80k_fs192k'; %'booth5-170727-wdsfilter-192kHz';
 params.ampF = 10/11;
 
 % filter
