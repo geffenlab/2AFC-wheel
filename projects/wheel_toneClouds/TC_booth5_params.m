@@ -20,7 +20,7 @@ params.taskType = 'TCtrain';
 % booth specific parameters
 params.boothID = 'booth5';
 params.com = 'COM3';
-params.rewardDuration = 15;
+params.rewardDuration = 25;
 params.rotaryDebounce =10;
 params.device = 'ASIO Lynx';
 % params.device = 'Lynx E44';
