@@ -11,7 +11,7 @@ if trialNumber>smoothing+1
         [nanmean(resp(trialNumber-smoothing-1:trialNumber-1)) nanmean(resp(trialNumber-smoothing:trialNumber))],'.k-')
     xlabel('trial number')
     ylabel('P(correct)')
-    ylim([0 100])
+    ylim([0 1])
     hold on
     subplot(1,2,2)
     plot([trialNumber-1 trialNumber],...
