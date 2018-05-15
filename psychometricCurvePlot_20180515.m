@@ -1,6 +1,6 @@
 clear
 
-run('D:\GitHub\2AFC-wheel\projects\wheel_toneClouds\TC_booth3_initialPsychometric_params.mat')
+run('D:\GitHub\2AFC-wheel\projects\wheel_toneClouds\TC_booth2_initialPsychometric_params.m')
 
 [FILENAME, PATHNAME] = uigetfile('D:\GitHub\2AFC-wheel\projects\wheel_toneClouds\*.txt','MultiSelect','on');
 if ~iscell(FILENAME); FILENAME = cellstr(FILENAME); end
