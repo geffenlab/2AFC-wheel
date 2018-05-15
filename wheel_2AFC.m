@@ -187,7 +187,7 @@ while ~flag
         
           % plot here
         smoothing = 30;
-        resp(trialNumber)=str2double(responseOutcome);
+        resp(trialNumber) = str2double(responseOutcome);
         respTime(trialNumber) = (str2double(responseTime)-str2double(soundOffset))/1e6;
         updateGraph(trialNumber, resp, respTime, smoothing);
         

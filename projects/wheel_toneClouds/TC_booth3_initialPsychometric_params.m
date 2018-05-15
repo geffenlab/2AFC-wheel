@@ -14,7 +14,7 @@ stimInfo.fs              = 192e3;
 
 % task specific stuff
 params.stimFunc = 'toneCloudGen_CA(stimInfo);';
-params.taskType = 'TCtrain';
+params.taskType = 'initial_psychometric';
 
 
 % booth specific parameters
