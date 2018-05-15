@@ -21,13 +21,11 @@ params.taskType = 'TCtrain';
 params.boothID = 'booth5';
 params.com = 'COM3';
 params.rewardDuration = 25;
-params.rotaryDebounce =10;
-params.device = 'ASIO Lynx';
-% params.device = 'Lynx E44';
-params.channel = [0 1];
-% params.channel = [1 2];
+params.rotaryDebounce = 10;
+params.device = 'Lynx E44';
+params.channel = [1 2];
 params.fs = 192e3;
-params.filtFile = '170615_booth5_3k-80k_fs192k'; %'booth5-170727-wdsfilter-192kHz';
+params.filtFile = 'booth5-170727-wdsfilter-192kHz';
 params.ampF = 10/11;
 
 % filter

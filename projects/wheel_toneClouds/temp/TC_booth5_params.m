@@ -18,14 +18,16 @@ params.taskType = 'TCtrain';
 
 
 % booth specific parameters
-params.boothID = 'booth6';
-params.com = 'COM4';
+params.boothID = 'booth5';
+params.com = 'COM3';
 params.rewardDuration = 25;
-params.rotaryDebounce = 10;
+params.rotaryDebounce =10;
 params.device = '2- Lynx E44';
+% params.device = 'Lynx E44';
+% params.channel = [0 1];
 params.channel = [1 2];
 params.fs = 192e3;
-params.filtFile = 'booth6-170727-wdsfilter-192kHz';
+params.filtFile = 'booth5-170727-wdsfilter-192kHz'; %'170615_booth5_3k-80k_fs192k';
 params.ampF = 10/11;
 
 % filter
@@ -41,7 +43,7 @@ params.holdDuration       = 1.5;
 params.respDuration       = 1.2;
 params.timeoutDuration    = 5000;
 params.trialTypeRatios    = [50 50];
-params.rewardContingency  = [2 1];
+params.rewardContingency  = [1 2];
 params.timeOutContingency = [1 1];
 
 % fix some other things
