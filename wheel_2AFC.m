@@ -219,7 +219,7 @@ while ~flag
     end
 end
 
-fprintf('\n\nPercent correct: %02.2f\n',mean(resp));
+fprintf('\n\nPercent correct: %02.2f\n',mean(resp(resp~=99)));
 delete(instrfindall)
 fclose(fid)
 %behSessionInfo(fn);
