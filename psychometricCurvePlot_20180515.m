@@ -1,9 +1,11 @@
+
 clear
 
 run('D:\GitHub\2AFC-wheel\projects\wheel_toneClouds\TC_booth2_initialPsychometric_params.m')
 
 [FILENAME, PATHNAME] = uigetfile('D:\GitHub\2AFC-wheel\projects\wheel_toneClouds\*.txt','MultiSelect','on');
 if ~iscell(FILENAME); FILENAME = cellstr(FILENAME); end
+maxArduinoMillis = 4294967296;
 data = [];
 for ii=1:length(FILENAME)
     d = importdata([PATHNAME FILENAME{ii}]);
@@ -15,11 +17,14 @@ for ii=1:length(FILENAME)
         end
         d(:,4)=[];
     end
-    data = [data;d.data]; %#ok<AGROW>
+    r = d.data(:,4:7); [rows,cols] = find(diff(r)<-3);
+    [~,minr] = min(rows);
+    d.data(min(rows)+1,cols(minr)+3:7) = d.data(min(rows)+1,cols(minr)+3:7)+maxArduinoMillis;
+    d.data(min(rows)+2:end,4:7) = d.data(min(rows)+2:end,4:7)+maxArduinoMillis;
+    data = [data;[d.data, ones(length(d.data),1)*ii]]; %#ok<AGROW>
 end
 % get rid of correction trials
 data(data(:,8)==1,:)=[];
-
 
 
 uS = unique(data(:,2),'rows');
@@ -45,4 +50,20 @@ box off
 axis tight
 set(gca,'TickDir','out','FontSize',14)
 ylim([0 1])
+
+%% plot response time for each stimulus
+respt = data(:,7)-data(:,6);
+std_rt = std(respt);
+index = respt>(std_rt*2);
+dat = data(index==0,:);
+respt = respt(index==0);
+for ii = 1:length(uS)
+    rows = dat(:,2)==uS(ii);
+    mrt(ii) = mean(respt(rows));
+end
+
+
+
+
+
 
