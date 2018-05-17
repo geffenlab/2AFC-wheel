@@ -52,6 +52,7 @@ set(gca,'TickDir','out','FontSize',14)
 ylim([0 1])
 
 %% plot response time for each stimulus
+figure
 respt = data(:,7)-data(:,6);
 std_rt = std(respt);
 index = respt>(std_rt*2);
@@ -61,6 +62,7 @@ for ii = 1:length(uS)
     rows = dat(:,2)==uS(ii);
     mrt(ii) = mean(respt(rows));
 end
+plot(mrt/1e6)
 
 
 
