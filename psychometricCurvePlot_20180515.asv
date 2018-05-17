@@ -28,7 +28,7 @@ pr = zeros(1,length(uS)); pr_std = pr;
 for ii=1:size(uS,1) % probability of turning wheel/responding right
     rows = find(data(:,2)==uS(ii,1));
     pr(ii) = mean(data(rows,3));
-    pr_std(ii) = std(data(rows,3))/sqrt(length(rows)-1);
+    pr_std(ii) = std(data(rows,3))/sqrt(;
 end
 
 
