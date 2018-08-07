@@ -1,4 +1,4 @@
-function [char_array] = ReadToTermination (srl_handle, term_char)
+function [char_array,int_array] = ReadToTermination (srl_handle, term_char)
  % parameter term_char is optional, if not specified
  % then CR = '\r' = 13dec is the default.
 if(nargin == 1)
@@ -22,5 +22,6 @@ while not_terminated
 end
 
  % Change int array to a char array and return a string array
+
  char_array = char(int_array);
 endfunction

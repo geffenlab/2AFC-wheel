@@ -52,6 +52,7 @@ end
 while ~flag
     
     % Wait for arduino to send data
+    
     wheelTurn = serialRead(s);
     disp(['wheel turn time: ' num2str(wheelTurn)])
     rotPos = serialRead(s);

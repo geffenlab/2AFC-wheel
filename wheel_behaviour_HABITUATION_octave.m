@@ -1,6 +1,7 @@
 % Behaviour task with wheel response
 function wheel_behaviour_HABITUATION_octave
 % run wheel_interruptor_test
+page_output_immediately (1)
 pkg load instrument-control
 clear all %#ok<CLALL>
 % delete(instrfindall)
@@ -68,12 +69,13 @@ pause(1);
 while ~flag
     
     % Wait for arduino to send data
-    wheelTurn = ReadToTermination(s);
-    disp(['wheel turn time: ' (wheelTurn)])
-    rotPos = ReadToTermination(s);
-    disp(['rotary position: ' (rotPos)])
-    trialNo = ReadToTermination(s);
-    disp(['trial number: ' (trialNo)])
+    wheelTurn = serialReadOctave(s);
+    disp(['wheel turn time: ' wheelTurn])
+%    disp(length(wheelTurn))
+    rotPos = serialReadOctave(s);
+    disp(['rotary position: ' rotPos])
+    trialNo = serialReadOctave(s);
+    disp(['trial number: ' trialNo])
 %    flag = true;
     % PRESENT THE SOUND AND RECEIVE SOUND OFFSET
     
@@ -88,11 +90,12 @@ while ~flag
     % Start presentation
     t1 = PsychPortAudio('Start', sc, 1); % 'Start', pahandle [, repetitions=1] [, when=0] [, waitForStart=0]
        
-    % Exit statement
-    keyCode = kbhit(1);
-    if keyCode == 'x'
-      flag = 1;
+    % Exit 
+    [~,~,keyCode] = KbCheck;
+    if sum(keyCode) == 1
+        if strcmp(KbName(keyCode),'ESCAPE') || cnt > 10
+            flag = 1;
+        end
     end
-    
 end
 
