@@ -16,7 +16,7 @@ else
 end
  taskState = 2;
 
- s=setupSerial('COM8'); % windows
+ s=setupSerial('COM3'); % windows
 %% Delete session
 % stop(nidaq)
 % nidaq.release()

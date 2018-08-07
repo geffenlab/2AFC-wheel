@@ -5,15 +5,18 @@ function [s] = setupSerial(comPort)
 
 s=serial(comPort);
 set(s,'BaudRate', 9600);
-set(s,'DataBits', 8);
+%set(s,'DataBits', 8);
+set(s,'ByteSize',8);
 set(s,'StopBits', 1);
-set(s,'Parity','none');
+%set(s,'Parity','none');
+set(s,'Parity','N');
 fopen(s);
 
 a = 'b';
 
 while a ~= 'a'
-    a=fread(s,1,'uchar');
+   %a=fread(s,1,'uchar');
+   a = srl_read(s,1);
 end
 
 if a=='a'

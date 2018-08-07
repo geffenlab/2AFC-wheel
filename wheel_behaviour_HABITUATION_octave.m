@@ -1,11 +1,11 @@
 % Behaviour task with wheel response
-function wheel_behaviour_HABITUATION
+function wheel_behaviour_HABITUATION_octave
 % run wheel_interruptor_test
 clear all %#ok<CLALL>
-delete(instrfindall)
+% delete(instrfindall)
 close all
 % figure;
-commandwindow
+% commandwindow
 cd('C:\Users\behaviour7\Documents\GitHub\2AFC-wheel')
 
 %Load corresponding Arduino sketch
@@ -80,7 +80,4 @@ while ~flag
         end
     end
 end
-
-
-
 
