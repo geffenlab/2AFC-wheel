@@ -1,6 +1,7 @@
 % Behaviour task with wheel response
 function wheel_behaviour_HABITUATION_octave
 % run wheel_interruptor_test
+pkg load instrument-control
 clear all %#ok<CLALL>
 % delete(instrfindall)
 close all
@@ -8,18 +9,12 @@ close all
 % commandwindow
 cd('C:\Users\behaviour7\Documents\GitHub\2AFC-wheel')
 
-%Load corresponding Arduino sketch
-hexPath = ['C:\Users\behaviour7\Documents\GitHub\2AFC-wheel\hexFiles\' 'wheel_habituation.ino.hex'];
-[~, cmdOut] = loadArduinoSketch('COM3',hexPath);
-disp(cmdOut);
-
 InitializePsychSound(1);
 fs=192000;
 sc = PsychPortAudio('Open', [], 1, 3, fs, 3); %'Open' [, deviceid][, mode][, reqlatencyclass][, freq][, channels]
 % Channel 1 is left speaker, 2 is right speaker and 3 is events
 status = PsychPortAudio('GetStatus', sc);
 fs = status.SampleRate; % check sample rate
-s=setupSerial('COM3'); % windows
 
 % Load filters
 load('C:\Users\behaviour7\Documents\GitHub\filters\170615_booth1_3k-80k_fs192k.mat')
@@ -40,25 +35,46 @@ KbName('UnifyKeyNames');
 % ctCounter = 0; % correction trial counter
 % smoothing=30; % 30 is what it is in the behavioural analysis function
 
+%% Load corresponding Arduino sketch
+hexPath = ['C:\Users\behaviour7\Documents\GitHub\2AFC-wheel\hexFiles\' 'wheel_habituation.ino.hex'];
+[~, cmdOut] = loadArduinoSketch('COM3',hexPath);
+disp(cmdOut);
+serialPort = 'COM3';
+s = serial(serialPort,9600);
+set(s,'TimeOut',10);
+
+a = 'b';
+%while ~strcmp(a,'arduino')
+a = ReadToTermination(s);
+disp(a)
+%end
+
+srl_write(s,'a');
+
+% pause(3);
+% disp(ReadToTermination(s1))
 %% RUN LOOP
 
 tt = [];
 cnt = 0;
 flag = 0;
 out='blah';
-while ~strcmp(out,'start')
-    out = serialRead(s);
-end
+pause(1);
+%while ~strcmp(out,'start')
+    out = ReadToTermination(s);
+    disp(out)
+%end
+
 while ~flag
     
     % Wait for arduino to send data
-    wheelTurn = serialRead(s);
-    disp(['wheel turn time: ' num2str(wheelTurn)])
-    rotPos = serialRead(s);
-    disp(['rotary position: ' num2str(rotPos)])
-    trialNo = serialRead(s);
-    disp(['trial number: ' num2str(trialNo)])
-    
+    wheelTurn = ReadToTermination(s);
+    disp(['wheel turn time: ' (wheelTurn)])
+    rotPos = ReadToTermination(s);
+    disp(['rotary position: ' (rotPos)])
+    trialNo = ReadToTermination(s);
+    disp(['trial number: ' (trialNo)])
+%    flag = true;
     % PRESENT THE SOUND AND RECEIVE SOUND OFFSET
     
     % PRESENT SOUND HERE
@@ -73,11 +89,10 @@ while ~flag
     t1 = PsychPortAudio('Start', sc, 1); % 'Start', pahandle [, repetitions=1] [, when=0] [, waitForStart=0]
        
     % Exit statement
-    [~,~,keyCode] = KbCheck;
-    if sum(keyCode) == 1
-        if strcmp(KbName(keyCode),'ESCAPE') || cnt > 10
-            flag = 1;
-        end
+    keyCode = kbhit(1);
+    if keyCode == 'x'
+      flag = 1;
     end
+    
 end
 

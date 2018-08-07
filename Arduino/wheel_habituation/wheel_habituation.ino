@@ -45,7 +45,7 @@ void setup() {
   pinMode (soundCardInput, INPUT);
   Serial.begin (9600);
   // check serial comm - acknowledgement routine
-  Serial.println('a'); // send a character to matlab
+  Serial.println("arduino"); // send a character to matlab
   char a = 'b';
   while (a != 'a')
   {
