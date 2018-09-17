@@ -23,6 +23,7 @@ params.com = 'COM3';
 params.rewardDuration = 35;
 params.rotaryDebounce = 10;
 params.device = '2- Lynx E44';
+% params.device = 'Lynx E44';
 params.channel = [1 2];
 params.fs = 192e3;
 params.filtFile = 'booth4-170727-wdsfilter-192kHz';

@@ -1,0 +1,4 @@
+trial trialType response stillTime stimOnset stimOffset respTime correctionTrial correct
+001 2 0 7.92782e+06 8.2295e+06 9.24864e+06 1.39391e+07 0 1
+002 1 0 1.69677e+07 1.72415e+07 1.82607e+07 1.90287e+07 0 0
+003 1 0 2.61458e+07 2.64204e+07 2.74396e+07 3.20294e+07 1 0

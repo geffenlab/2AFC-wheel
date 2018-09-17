@@ -189,7 +189,12 @@ while ~flag
         smoothing = 30;
         resp(trialNumber) = str2double(responseOutcome);
         respTime(trialNumber) = (str2double(responseTime)-str2double(soundOffset))/1e6;
-        updateGraph(trialNumber, resp, respTime, smoothing);
+        if resp==99
+            pl_resp(trialNumber) = NaN;
+        else
+            pl_resp(trialNumber) = resp(trialNumber);
+        end
+        updateGraph(trialNumber, pl_resp, respTime, smoothing);
         
         % log the trial info
         %fprintf(fid,'trial trialType response stillTime stimOnset stimOffset respTime correctionTrial correct\n');
