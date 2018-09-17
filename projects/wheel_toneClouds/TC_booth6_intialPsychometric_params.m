@@ -5,7 +5,7 @@ a = log2space(5000, 32000,8); % tone clouds
 stimInfo.stimFunction    = 'toneCloudGen'; % stimulus function
 stimInfo.tonePipDur      = 0.030;            % duration of each tone pip in cloud
 stimInfo.totalDur        = 1;                % total duration of each tone cloud
-stimInfo.cloudRange      = [5000 10000; 20000 40000]; % range of tones within the cloud
+stimInfo.cloudRange      = [5000 10000; 7500 15000; 10000 20000; 15000 30000; 20000 40000]; % range of tones within the cloud
 stimInfo.nLogSteps       = 10;               % number of tones in the range
 stimInfo.envDur          = 0.005;            % duration of tone pip envelope
 stimInfo.tonePipRate     = 100;              % presentation rate in Hz (determines tone overlap)
@@ -14,7 +14,7 @@ stimInfo.fs              = 192e3;
 
 % task specific stuff
 params.stimFunc = 'toneCloudGen_CA(stimInfo);';
-params.taskType = 'TCtrain';
+params.taskType = 'TC_initial_psychometric';
 
 
 % booth specific parameters
@@ -40,9 +40,9 @@ params.filt = FILT;
 params.holdDuration       = 1.5;
 params.respDuration       = 1.2;
 params.timeoutDuration    = 5000;
-params.trialTypeRatios    = [50 50];
-params.rewardContingency  = [2 1];
-params.timeOutContingency = [1 1];
+params.trialTypeRatios    = [38 8 8 8 38];
+params.rewardContingency  = [2 0 0 0 1];
+params.timeOutContingency = [1 0 0 0 1];
 
 % fix some other things
 stimInfo.FILT = params.filt;
