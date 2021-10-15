@@ -1,5 +1,5 @@
 % a = logspace(log10(5000),log10(40000),8); % tone clouds
-a = log2space(5000, 32000,8); % tone clouds
+% a = log2space(5000, 32000,8); % tone clouds
 
 % stimulus info stuff
 stimInfo.stimFunction    = 'toneCloudGen'; % stimulus function
@@ -23,13 +23,13 @@ params.com = 'COM4';
 params.rewardDuration = 64;
 params.rotaryDebounce = 10;
 params.device = 'Lynx E44';
-params.channel = [1 2];
+params.channel = [1 2 3 4];
 params.fs = 192e3;
 params.filtFile = 'booth1-170727-wdsfilter-192kHz';
 params.ampF = 10/11;
 
 % filter
-params.filtdir = 'D:\GitHub\filters';
+params.filtdir = [params.githubPath '\filters'];
 if ~exist(params.filtdir,'dir')
     error('Filter directory not found, pull from GitHub.');
 end
@@ -46,6 +46,6 @@ params.timeOutContingency = [1 1];
 
 % fix some other things
 stimInfo.FILT = params.filt;
-stimInfo.respDuration = .5;
+stimInfo.respDuration = params.respDuration;
 
 

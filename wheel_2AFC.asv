@@ -113,7 +113,7 @@ while ~flag
         
         % add audio to buffer
         sound = [stim; events]' .* params.ampF;
-        sound(:,3:4) = zeros(length(sound),2);
+        sound(:,3:4) = zeros(length(sound),1);
         queueOutput(s,sound,params.device);
         
         % increment trial counter
@@ -166,7 +166,7 @@ while ~flag
                     wait(s);
                 end
             end
-            queueOutput(s,[click; click;click;click]'.*params.ampF,params.device);
+            queueOutput(s,[click; click]'.*params.ampF,params.device);
             startOutput(s,params.device);
         elseif str2double(responseOutcome)==99
             newTrial = 1;
@@ -180,7 +180,7 @@ while ~flag
                     wait(s);
                 end
             end
-            queueOutput(s,[noiseBurstL; noiseBurstL;noiseBurstL;noiseBurstL]'.*params.ampF,params.device);
+            queueOutput(s,[noiseBurstL; noiseBurstL;noiseBurstL]'.*params.ampF,params.device);
             startOutput(s,params.device);
             WaitSecs(.3);
             if ctCounter>3

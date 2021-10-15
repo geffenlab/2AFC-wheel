@@ -4,12 +4,12 @@ function wheel_behaviour_soundCard
 
 InitializePsychSound(1);
 fs=192000;
-sc = PsychPortAudio('Open', [], 1, 3, fs, 2); %'Open' [, deviceid][, mode][, reqlatencyclass][, freq][, channels]
+sc = PsychPortAudio('Open', [], 1, 3, fs, 3); %'Open' [, deviceid][, mode][, reqlatencyclass][, freq][, channels]
 
 
 taskState = 2;
 
-s=setupSerial('COM5'); % windows
+s=setupSerial('COM4'); % windows
 %% Delete session
 % stop(nidaq)
 % nidaq.release()
