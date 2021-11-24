@@ -7,13 +7,13 @@ params.com = 'COM4';
 params.rewardDuration = 30;
 params.rotaryDebounce = 5;
 params.device = 'Lynx E44';
-params.channel = [1 2];
+params.channel = [1 2 3 4];
 params.fs = 192e3;
 params.filtFile = 'booth1-170727-wdsfilter-192kHz';
 params.ampF = 10/11;
 
 % stimulus parameters
-params.filtdir = 'D:\GitHub\filters';
+params.filtdir = [params.githubPath '\filters'];
 if ~exist(params.filtdir,'dir')
     error('Filter directory not found, pull from GitHub.');
 end

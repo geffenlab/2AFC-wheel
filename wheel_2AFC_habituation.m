@@ -13,15 +13,17 @@ params.projPath = [params.basePath filesep 'projects' filesep project];
 params.paramFile = [params.projPath filesep parameterFile];
 params.hexFile = [params.basePath filesep 'hexFiles' filesep 'wheel_habituation3.ino.hex'];
 params.dataPath = [params.projPath filesep mouse];
-params.sessID = datestr(now,'YYMMDD');
+git = strfind(params.basePath,'GitHub');
+params.githubPath = params.basePath(1:git+5);
+params.sessID = datestr(now,'yyyymmdd');
 
 % load parameters
 if contains(parameterFile,'.txt')
     % load text file
-    [params fs] = loadParameters(paramFile);
+    [params fs] = loadParameters(params.paramFile);
 elseif contains(parameterFile,'.mat')
     % load mat file
-    load(paramFile);
+    load(params.paramFile);
 elseif contains(parameterFile,'.m')
     % run script
     run(params.paramFile);
@@ -46,7 +48,7 @@ disp(serialRead(p));
 turnGood = tone(8000,3/2*pi,0.1,params.fs)/10;
 turnGood = envelope_CA(turnGood,.005,params.fs);
 turnGood = conv(turnGood,params.filt,'same');
-turnGood = [turnGood; turnGood];
+turnGood = repmat(turnGood,4,1);
 turnGood = zeros(size(turnGood));
 
 % initialize audio buffer

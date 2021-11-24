@@ -1,5 +1,5 @@
 %% xxxx date here 2017 Water calibration for the top booth - fill the tube to 60 ml with H2O
-empty = ; % g - weight of empty eppendorf
+empty = []; % g - weight of empty eppendorf
 durations = []; % ms - duration of solenoid opening
 weights = []; % weight of eppendorf with water from 100 openings of the valve
 ulPerOpening = (weights - repmat(empty,1,length(weights)))*1000/100;

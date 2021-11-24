@@ -61,7 +61,7 @@ guidata(hObject, handles);
 % Populate the listboxes
 global baseDir
 %baseDir = ['..'];
-baseDir = ['.'];
+baseDir = '.';
 
 
 projects = dir([baseDir filesep 'projects']);

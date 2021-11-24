@@ -19,17 +19,17 @@ params.taskType = 'TCtrain';
 
 % booth specific parameters
 params.boothID = 'blueBooth';
-params.com = 'COM3';
+params.com = 'COM4';
 params.rewardDuration = 15; % changed from [oldvalue]
 params.rotaryDebounce = 5;
-params.device = 'ASIO Lynx';
+params.device = 'Lynx E44';
 params.channel = [0 1];
 params.fs = 192e3;
 params.filtFile = 'booth6-170727-wdsfilter-192kHz';
 params.ampF = 10/11;
 
 % filter
-params.filtdir = 'D:\GitHub\filters';
+params.filtdir = 'C:\Users\Maria\Documents\GitHub\filters';
 if ~exist(params.filtdir,'dir')
     error('Filter directory not found, pull from GitHub.');
 end
