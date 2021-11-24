@@ -2,16 +2,16 @@ function stim = spatialAdaptorGen(stimInfo)
 
 
 %% set variables - provided by the input
-stimInfo.fs             = 20e3;            % sample rates
-stimInfo.adaptor_ILD    = -10;               % ILD of the adaptor in dB
-stimInfo.adaptor_dur    = 0.5;              % adaptor duration in s
-stimInfo.adaptor_level  = 60;               % mean level dB
-stimInfo.adaptor_bandwidth = [1 8];        % adaptor bandwidth in kHz
-stimInfo.target_ILD     = -30:10:30;        % ILD of target
-stimInfo.target_dur     = 0.2;              % target duration in s
-stimInfo.target_level   = 70;               % mean level dB
-stimInfo.target_bandwidth = [1 3];        % target bandwidth in kHz
-stimInfo.envDur         = 0.005;            % duration of envelope in s
+% stimInfo.fs             = 100e3;            % sample rates
+% stimInfo.adaptor_ILD    = -10;               % ILD of the adaptor in dB
+% stimInfo.adaptor_dur    = 0.5;              % adaptor duration in s
+% stimInfo.adaptor_level  = 60;               % mean level dB
+% stimInfo.adaptor_bandwidth = [3 10];        % adaptor bandwidth in kHz
+% stimInfo.target_ILD     = -30:10:30;        % ILD of target
+% stimInfo.target_dur     = 0.2;              % target duration in s
+% stimInfo.target_level   = 70;               % mean level dB
+% stimInfo.target_bandwidth = [3 5];        % target bandwidth in kHz
+% stimInfo.envDur         = 0.005;            % duration of envelope in s
 si = stimInfo;
 
 %% Make the adaptor
@@ -28,10 +28,10 @@ end
 tL = envelopeKCW(tL,si.envDur*1000,si.fs);
 tR = envelopeKCW(tR,si.envDur*1000,si.fs);
 adaptor = [tL,tR];
-sound(adaptor/100,si.fs)
+% sound(adaptor/100,si.fs)
 
 %% Make the target
-target_ild = randsample(si.target_ILD,1);
+target_ild = si.target_trial_ILD;
 t = rand(si.target_dur*si.fs,1);                           % create noise
 [b,a] = butter(7,si.target_bandwidth*1000/(si.fs/2));      % create filter
 t = filtfilt(b,a,t);                                        % filter
@@ -45,9 +45,9 @@ end
 tL = envelopeKCW(tL,si.envDur*1000,si.fs);
 tR = envelopeKCW(tR,si.envDur*1000,si.fs);
 target = [tL,tR];
-sound([adaptor;target]/100,si.fs)
+% sound([adaptor;target]/100,si.fs)
 
-stim = [adaptor;target];
+stim = ([adaptor;target])/100;
 
 % spectrogram(stim(:,1),256,200,256,si.fs,'yaxis');
 
