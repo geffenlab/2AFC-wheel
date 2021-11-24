@@ -1,5 +1,5 @@
 % task
-params.taskType = 'toneCloudHab';
+params.taskType = 'Habituation';
 
 % booth parameters
 params.boothID = 'booth1';
