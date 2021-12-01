@@ -4,16 +4,15 @@ rng(stimInfo.seed)
 
 % stimInfo parameters
 stimInfo.fs             = 192e3;            % sample rates
-stimInfo.adaptor_ILD    = -10;              % ILD of the adaptor in dB
+stimInfo.adaptor_ILDs    = 0;              % ILD of the adaptor in dB
 stimInfo.adaptor_dur    = 0.5;              % adaptor duration in s
 stimInfo.adaptor_level  = 60;               % mean level dB
 stimInfo.adaptor_bandwidth = [5 60];        % adaptor bandwidth in kHz
-stimInfo.target_dur     = 0.2;              % target duration in s
+stimInfo.target_dur     = 0.1;              % target duration in s
 stimInfo.target_level   = 60;               % mean level dB
-stimInfo.target_ILDs     = -10:2:10;        % ILD of target
+stimInfo.target_ILDs     = [-30,30];        % ILD of target
 stimInfo.target_bandwidth = [20 40];        % target bandwidth in kHz
 stimInfo.envDur         = 0.005;            % duration of envelope in s
-stimInfo.repeats        = 10;
 stimInfo.stimFunction    = 'spatialAdaptorGen'; % stimulus function
 
 % task specific stuff
