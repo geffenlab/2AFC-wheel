@@ -165,5 +165,7 @@ switch project
         wheel_2AFC(mouse,baseDir,project,parameterFile);
     case 'habituation'
         wheel_2AFC_habituation(mouse,baseDir,project,parameterFile);
+    otherwise
+         wheel_2AFC(mouse,baseDir,project,parameterFile);
         
 end

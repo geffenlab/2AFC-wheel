@@ -1,4 +1,4 @@
-function stim = spatialAdaptorGen(stimInfo)
+function [stim, events] = spatialAdaptorGen(stimInfo)
 
 
 %% set variables - provided by the input
@@ -13,6 +13,15 @@ function stim = spatialAdaptorGen(stimInfo)
 % stimInfo.target_bandwidth = [3 5];        % target bandwidth in kHz
 % stimInfo.envDur         = 0.005;            % duration of envelope in s
 si = stimInfo;
+
+%% choose the adaptor_ILD
+if length(si.adaptor_ILDs)==1
+    si.adaptor_ILD = 1;
+end
+
+%% Choose the target_trial_ILD
+si.target_trial_ILD = si.target_ILDs(si.trialType);
+
 
 %% Make the adaptor
 t = rand(si.adaptor_dur*si.fs,1);                           % create noise
@@ -47,9 +56,28 @@ tR = envelopeKCW(tR,si.envDur*1000,si.fs);
 target = [tL,tR];
 % sound([adaptor;target]/100,si.fs)
 
-stim = ([adaptor;target])/100;
+stim = ([adaptor;target]);
+stim(:,1) = conv(stim(:,1),stimInfo.FILT,'same');
+stim(:,2) = conv(stim(:,2),stimInfo.FILT,'same');
+
+%% make events
+event_dur = .005 * stimInfo.fs; % 5 ms events for onset and offset
+% pad to add ending event
+stim = [stim; zeros(event_dur-1,2)];
+events = zeros(length(stim),1);
+events(1:event_dur) = 0.5;
+events(length(stim)-event_dur+1:length(stim)) = 0.5;
+
+stim = stim/10;
+stim = stim';
+events = events';
 
 % spectrogram(stim(:,1),256,200,256,si.fs,'yaxis');
 
-
+function output_signal = envelopeKCW(signal,rampDur,fs)
+% This function tries to remove the transients in the signal by enveloping the first and last period. Ramp duration is defined by rampDur in **ms** envelope(signal,rampDuration,samplerate)
+samples=round((rampDur/1000)*fs);
+x = -pi:pi/samples:0;
+y = 0:pi/samples:pi;
+output_signal = signal;
 

@@ -113,7 +113,11 @@ while ~flag
         
         % add audio to buffer
         sound = [stim; events]' .* params.ampF;
-        sound(:,3:4) = zeros(length(sound),2);
+        if size(sound,2)==2
+            sound(:,3:4) = zeros(length(sound),2);
+        elseif size(sound,2)==3
+            sound(:,4) = zeros(length(sound),1);
+        end
         queueOutput(s,sound,params.device);
         
         % increment trial counter
