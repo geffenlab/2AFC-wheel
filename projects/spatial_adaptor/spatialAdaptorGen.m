@@ -16,7 +16,8 @@ si = stimInfo;
 
 %% choose the adaptor_ILD
 if length(si.adaptor_ILDs)==1
-    si.adaptor_ILD = 1;
+    si.adaptor_ILD = si.adaptor_ILDs(1);
+    si.adaptor_SD = si.adaptor_SDs(1);
 end
 
 %% Choose the target_trial_ILD
@@ -24,6 +25,8 @@ si.target_trial_ILD = si.target_ILDs(si.trialType);
 
 
 %% Make the adaptor
+n_pips = si.adaptor_dur/si.adaptor_pip_dur;
+pip_ILDs = si.adaptor_ILD + si.adaptor_SD.*randn(n_pips,1);
 t = rand(si.adaptor_dur*si.fs,1);                           % create noise
 [b,a] = butter(7,si.adaptor_bandwidth*1000/(si.fs/2));      % create filter
 t = filtfilt(b,a,t);                                        % filter
