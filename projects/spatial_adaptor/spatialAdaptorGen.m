@@ -7,7 +7,7 @@ function [stim, events] = spatialAdaptorGen(stimInfo)
 % stimInfo.adaptor_dur    = 0.5;              % adaptor duration in s
 % stimInfo.adaptor_level  = 60;               % mean level dB
 % stimInfo.adaptor_bandwidth = [3 10];        % adaptor bandwidth in kHz
-% stimInfo.target_ILD     = -30:10:30;        % ILD of target
+% stimInfo.target_ILDs     = -30:10:30;        % ILD of target
 % stimInfo.target_dur     = 0.2;              % target duration in s
 % stimInfo.target_level   = 70;               % mean level dB
 % stimInfo.target_bandwidth = [3 5];        % target bandwidth in kHz
@@ -30,17 +30,24 @@ pip_ILDs = si.adaptor_ILD + si.adaptor_SD.*randn(n_pips,1);
 t = rand(si.adaptor_dur*si.fs,1);                           % create noise
 [b,a] = butter(7,si.adaptor_bandwidth*1000/(si.fs/2));      % create filter
 t = filtfilt(b,a,t);                                        % filter
+
+% ADD IN HERE ATTENUATION TO MAKE SOUND 60 dB IN BOTH SPEAKERS (AFTER
+% CALIBRATION)
+
+
 tL = t;
 tR = t;
-if si.adaptor_ILD<0                                         % change ILD
-    tL = tL.*10^(abs(si.adaptor_ILD)/20);     
-elseif si.adaptor_ILD>0
-    tR = tR*10^(abs(si.adaptor_ILD)/20);   
+for ii = 1:length(pip_ILDs)
+    range = (ii-1)*(si.adaptor_pip_dur*si.fs)+1:ii*(si.adaptor_pip_dur*si.fs);
+    tL(range) = tL(range).*10^(-(pip_ILDs(ii)/2)/20);
+    tR(range) = tR(range).*10^((pip_ILDs(ii)/2)/20);
 end
+                                     % change ILD
+ 
 tL = envelopeKCW(tL,si.envDur*1000,si.fs);
 tR = envelopeKCW(tR,si.envDur*1000,si.fs);
 adaptor = [tL,tR];
-% sound(adaptor/100,si.fs)
+%  sound(adaptor/100,si.fs)
 
 %% Make the target
 target_ild = si.target_trial_ILD;
@@ -49,11 +56,9 @@ t = rand(si.target_dur*si.fs,1);                           % create noise
 t = filtfilt(b,a,t);                                        % filter
 tL = t;
 tR = t;
-if target_ild<0                                         % change ILD
-    tL = tL.*10^(abs(target_ild)/20);                            
-elseif si.adaptor_ILD>0
-    tR = tR*10^(abs(target_ild)/20); 
-end
+% Change target ILD
+tL = tL.*10^(-(target_ild/2)/20);
+tR = tR.*10^((target_ild/2)/20);
 tL = envelopeKCW(tL,si.envDur*1000,si.fs);
 tR = envelopeKCW(tR,si.envDur*1000,si.fs);
 target = [tL,tR];
