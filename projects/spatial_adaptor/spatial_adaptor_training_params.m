@@ -59,4 +59,4 @@ params.timeOutContingency = [1 1];
 stimInfo.FILT = params.filt;
 stimInfo.respDuration = params.respDuration;
 
-% save('SA_params.mat','stimInfo');
+save('C:\Users\Maria\Documents\MATLAB\Calibration\20211206_2afcwheel_calibration\SA_params.mat','stimInfo');
