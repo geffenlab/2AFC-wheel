@@ -31,21 +31,39 @@ t = rand(si.adaptor_dur*si.fs,1);                           % create noise
 [b,a] = butter(7,si.adaptor_bandwidth*1000/(si.fs/2));      % create filter
 t = filtfilt(b,a,t);                                        % filter
 
+% Make ramp and apply
+si.ramp_dur = 0.001; % ramp duration in s
+ramp_samp = si.ramp_dur*si.fs;
+ramp_env = zeros(length(t),1);
+for ii = 1:length(pip_ILDs)
+    range = (ii-1)*(si.adaptor_pip_dur*si.fs)+1:ii*(si.adaptor_pip_dur*si.fs);
+    ramp_env(range) = pip_ILDs(ii)/2;
+end
+for ii = 1:length(pip_ILDs)-1
+    range = ii*(si.adaptor_pip_dur*si.fs)-(ramp_samp/2)+1:ii*(si.adaptor_pip_dur*si.fs)+(ramp_samp/2);
+    ramp_env(range) = interp1([1 2],[pip_ILDs(ii)/2 pip_ILDs(ii+1)/2],linspace(1,2,ramp_samp));
+end
+ramp_env(1:ramp_samp/2) = interp1([1 2],[0 pip_ILDs(1)/2],linspace(1,2,ramp_samp/2));
+ramp_env(end-ramp_samp/2+1:end) = interp1([1 2],[pip_ILDs(end)/2 0],linspace(1,2,ramp_samp/2));
+
+tL = t.*10.^(-ramp_env/20);
+tR = t.*10.^(ramp_env/20);
+
 % ADD IN HERE ATTENUATION TO MAKE SOUND 60 dB IN BOTH SPEAKERS (AFTER
 % CALIBRATION)
 
 
-tL = t;
-tR = t;
-for ii = 1:length(pip_ILDs)
-    range = (ii-1)*(si.adaptor_pip_dur*si.fs)+1:ii*(si.adaptor_pip_dur*si.fs);
-    tL(range) = tL(range).*10^(-(pip_ILDs(ii)/2)/20);
-    tR(range) = tR(range).*10^((pip_ILDs(ii)/2)/20);
-end
-                                     % change ILD
- 
-tL = envelopeKCW(tL,si.envDur*1000,si.fs);
-tR = envelopeKCW(tR,si.envDur*1000,si.fs);
+% tL = t;
+% tR = t;
+% for ii = 1:length(pip_ILDs)
+%     range = (ii-1)*(si.adaptor_pip_dur*si.fs)+1:ii*(si.adaptor_pip_dur*si.fs);
+%     tL(range) = tL(range).*10^(-(pip_ILDs(ii)/2)/20);
+%     tR(range) = tR(range).*10^((pip_ILDs(ii)/2)/20);
+% end
+%                                      % change ILD
+%  
+% tL = envelopeKCW(tL,si.envDur*1000,si.fs);
+% tR = envelopeKCW(tR,si.envDur*1000,si.fs);
 adaptor = [tL,tR];
 %  sound(adaptor/100,si.fs)
 
