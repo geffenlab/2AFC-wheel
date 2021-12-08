@@ -70,7 +70,7 @@ noiseBurstR = conv(noiseBurst,params.filt_right,'same');
 [b,a] = butter(5,[5000/fs 50000/fs]);
 click = rand(1,0.025*fs)/30;
 click = envelope_CA(click, 0.005,fs);
-click = conv(click,params.filt_left,'same');
+click = conv(click,params.filt,'same');
 
 
 % initialize some counts
@@ -94,7 +94,7 @@ while ~flag
             if exist('stimInfo','var')
                 stimInfo.trialType = tt;
             end
-            [stim, events] = eval(params.stimFunc);
+            [stim events] = eval(params.stimFunc);
             cd(params.basePath);
             rewardType =  params.rewardContingency(tt);
             giveTO = params.timeOutContingency(tt); % give time out?
@@ -185,7 +185,7 @@ while ~flag
                     wait(s);
                 end
             end
-            queueOutput(s,[noiseBurstL; noiseBurstR;zeros(size(noiseBurstL));zeros(size(noiseBurstL))]'.*params.ampF,params.device);
+            queueOutput(s,[noiseBurstL; noiseBurstL;noiseBurstL;noiseBurstL]'.*params.ampF,params.device);
             startOutput(s,params.device);
             WaitSecs(.3);
             if ctCounter>3
