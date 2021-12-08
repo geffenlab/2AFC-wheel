@@ -1,4 +1,4 @@
-function [stim, events] = spatialAdaptorGen(stimInfo)
+function [stim, events] = spatialAdaptorGen(stimInfo,params)
 
 
 %% set variables - provided by the input
@@ -23,13 +23,23 @@ end
 %% Choose the target_trial_ILD
 si.target_trial_ILD = si.target_ILDs(si.trialType);
 
-
+ 
 %% Make the adaptor
 n_pips = si.adaptor_dur/si.adaptor_pip_dur;
 pip_ILDs = si.adaptor_ILD + si.adaptor_SD.*randn(n_pips,1);
 t = rand(si.adaptor_dur*si.fs,1);                           % create noise
 [b,a] = butter(7,si.adaptor_bandwidth*1000/(si.fs/2));      % create filter
 t = filtfilt(b,a,t);                                        % filter
+
+% apply speaker filter
+tL = conv(t,si.FILT_left,'same');
+tR = conv(t,si.FILT_right,'same');
+
+% Attenuate to baseline level (70 dB) and then adaptor level
+left_att = si.adaptor_level - 70 + params.leftspk_adaptor_offset;
+right_att = si.adaptor_level - 70 + params.rightspk_adaptor_offset;
+tL = tL.*10.^(left_att/20);
+tR = tR.*10.^(right_att/20);
 
 % Make ramp and apply
 si.ramp_dur = 0.001; % ramp duration in s
@@ -46,11 +56,10 @@ end
 ramp_env(1:ramp_samp/2) = interp1([1 2],[0 pip_ILDs(1)/2],linspace(1,2,ramp_samp/2));
 ramp_env(end-ramp_samp/2+1:end) = interp1([1 2],[pip_ILDs(end)/2 0],linspace(1,2,ramp_samp/2));
 
-tL = t.*10.^(-ramp_env/20);
-tR = t.*10.^(ramp_env/20);
+tL = tL.*10.^(-ramp_env/20);
+tR = tR.*10.^(ramp_env/20);
 
-% ADD IN HERE ATTENUATION TO MAKE SOUND 60 dB IN BOTH SPEAKERS (AFTER
-% CALIBRATION)
+
 
 
 % tL = t;
@@ -72,8 +81,18 @@ target_ild = si.target_trial_ILD;
 t = rand(si.target_dur*si.fs,1);                           % create noise
 [b,a] = butter(7,si.target_bandwidth*1000/(si.fs/2));      % create filter
 t = filtfilt(b,a,t);                                        % filter
-tL = t;
-tR = t;
+
+% apply speaker filter
+tL = conv(t,si.FILT_left,'same');
+tR = conv(t,si.FILT_right,'same');
+
+% Attenuate to baseline level (70 dB) and to adaptor level and then target
+% offsets
+left_att = si.adaptor_level - 70 + params.leftspk_adaptor_offset + params.leftspk_target_offset;
+right_att = si.adaptor_level - 70 + params.rightspk_adaptor_offset + params.rightspk_target_offset;
+tL = tL.*10.^(left_att/20);
+tR = tR.*10.^(right_att/20);
+
 % Change target ILD
 tL = tL.*10^(-(target_ild/2)/20);
 tR = tR.*10^((target_ild/2)/20);
@@ -83,8 +102,7 @@ target = [tL,tR];
 % sound([adaptor;target]/100,si.fs)
 
 stim = ([adaptor;target]);
-stim(:,1) = conv(stim(:,1),stimInfo.FILT,'same');
-stim(:,2) = conv(stim(:,2),stimInfo.FILT,'same');
+
 
 %% make events
 event_dur = .005 * stimInfo.fs; % 5 ms events for onset and offset
