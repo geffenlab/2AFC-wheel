@@ -8,7 +8,8 @@ void setup() {
   Serial.begin(9600);
 
 }
-
+// open the serial thing (top right). type any letter and press enter to 
+// open the valve. Enter 0 to close the valve.
 void loop() {
   // put your main code here, to run repeatedly:
   if (Serial.available() > 0) {

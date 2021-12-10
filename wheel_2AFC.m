@@ -63,15 +63,22 @@ trialType = trialType(randperm(length(trialType)));
 % make a noise burst for punishments
 noiseBurst = rand(1,0.3*fs)/10;
 noiseBurst = envelope_CA(noiseBurst,.005,fs);
-noiseBurstL = conv(noiseBurst,params.filt_left,'same');
-noiseBurstR = conv(noiseBurst,params.filt_right,'same');
 
 % make a click for rewards
 [b,a] = butter(5,[5000/fs 50000/fs]);
 click = rand(1,0.025*fs)/30;
 click = envelope_CA(click, 0.005,fs);
-click = conv(click,params.filt_left,'same');
 
+%filter noise bursts and clicks
+if isfield(params,'filt')
+    noiseBurstL = conv(noiseBurst,params.filt,'same');
+    noiseBurstR = noiseBurstL;
+    click = conv(click,params.filt,'same');
+else
+    noiseBurstL = conv(noiseBurst,params.filt_left,'same');
+    noiseBurstR = conv(noiseBurst,params.filt_right,'same');
+    click = conv(click,params.filt_left,'same');
+end
 
 % initialize some counts
 trialNumber = 0;
