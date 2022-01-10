@@ -3,19 +3,19 @@ stimInfo.seed           = now;
 rng(stimInfo.seed)
 
 % stimInfo parameters
-stimInfo.fs             = 192e3;            % sample rates
-stimInfo.adaptor_ILDs    = 0;              % ILD of the adaptor in dB
-stimInfo.adaptor_SDs    = 10;               % standard deviation of adaptor
-stimInfo.adaptor_dur    = 1;              % adaptor duration in s
-stimInfo.adaptor_pip_dur = 0.005;           % duration of individual adaptor pips
-stimInfo.adaptor_level  = 65;               % mean level dB
-stimInfo.adaptor_bandwidth = [5 60];        % adaptor bandwidth in kHz
-stimInfo.target_dur     = 0.1;              % target duration in s
-stimInfo.target_level   = 60;               % mean level dB
-stimInfo.target_ILDs     = [-30,30];        % ILD of target
-stimInfo.target_bandwidth = [20 40];        % target bandwidth in kHz
-stimInfo.envDur         = 0.005;            % duration of envelope in s
-stimInfo.stimFunction    = 'spatialAdaptorGen'; % stimulus function
+stimInfo.fs                 = 192e3;            % sample rates
+stimInfo.adaptor_ILDs       = 0;              % ILD of the adaptor in dB
+stimInfo.adaptor_SDs        = 10;               % standard deviation of adaptor
+stimInfo.adaptor_dur        = 1;              % adaptor duration in s
+stimInfo.adaptor_pip_dur    = 0.005;           % duration of individual adaptor pips
+stimInfo.adaptor_level      = 66;               % mean level dB
+stimInfo.adaptor_bandwidth  = [5 60];        % adaptor bandwidth in kHz
+stimInfo.target_dur         = 0.2;              % target duration in s
+stimInfo.target_level       = 60;               % mean level dB
+stimInfo.target_ILDs        = [-30,30];        % ILD of target
+stimInfo.target_bandwidth   = [20 40];        % target bandwidth in kHz
+stimInfo.envDur             = 0.005;            % duration of envelope in s
+stimInfo.stimFunction       = 'spatialAdaptorGen'; % stimulus function
 
 % task specific stuff
 params.stimFunc = 'spatialAdaptorGen(stimInfo,params);';
