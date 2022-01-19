@@ -31,7 +31,7 @@ params.taskType = 'training';
 % booth specific parameters
 params.boothID = 'booth1';
 params.com = 'COM4';
-params.rewardDuration = 64;
+params.rewardDuration = 135;
 params.rotaryDebounce = 10;
 params.device = 'Lynx E44';
 params.channel = [1 2 3 4];
