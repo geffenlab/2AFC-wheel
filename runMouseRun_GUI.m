@@ -92,7 +92,7 @@ global baseDir
 contents = cellstr(get(hObject,'String'));
 projSel = contents{get(hObject,'Value')};
 
-mice = dir([baseDir filesep 'projects' filesep projSel]);
+mice = dir([baseDir filesep 'mice']);
 mice(~[mice.isdir]) = [];
 mice(strcmp({mice.name},'.'))=[]; 
 mice(strcmp({mice.name},'..'))=[]; 

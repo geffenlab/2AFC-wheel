@@ -62,50 +62,52 @@ KbName('UnifyKeyNames');
 
 tt = [];
 cnt = 0;
-flag = 0;
-out='blah';
+flag = false;
+out ='blah';
 while ~strcmp(out,'start')
     out = serialRead(p);
 end
+
+
 while ~flag
-    disp('Waiting for wheel turn...');
-    
-    % Wait for arduino to send data
-    wheelTurn = serialRead(p);
-    disp(['wheel turn time: ' num2str(wheelTurn)])
-    rotPos = serialRead(p);
-    disp(['rotary position: ' num2str(rotPos)])
-    trialNo = serialRead(p);
-    disp(['trial number: ' num2str(trialNo)])
-    
-    % queue and present sound
-    tic
-    startOutput(s,params.device);
-    toc
-    
-    % make sure we're ready for the next trial
-    if strcmp(params.device,'NIDAQ') || contains(params.device,'Lynx E44')
-        WaitSecs(.2);
-        if s.IsRunning
-            stop(s);
+    flag = check_keyboard;
+    x = p.BytesAvailable;
+    if x
+        % Wait for arduino to send data
+        wheelTurn = serialRead(p);
+        disp(['wheel turn time: ' num2str(wheelTurn)])
+        rotPos = serialRead(p);
+        disp(['rotary position: ' num2str(rotPos)])
+        trialNo = serialRead(p);
+        disp(['trial number: ' num2str(trialNo)])
+
+        % queue and present sound
+        tic
+        startOutput(s,params.device);
+        toc
+
+%         make sure we're ready for the next trial
+        if strcmp(params.device,'NIDAQ') || contains(params.device,'Lynx E44')
+            WaitSecs(.2);
+            if s.IsRunning
+                stop(s);
+            end
         end
+
+        % queue output for next trial
+        queueOutput(s,turnGood'.*params.ampF,params.device);
     end
-    
-    % queue output for next trial
-    queueOutput(s,turnGood'.*params.ampF,params.device);
-    
-    % Exit statement
-    [~,~,keyCode] = KbCheck;
-    if sum(keyCode) == 1
-        if strcmp(KbName(keyCode),'ESCAPE')
-            flag = 1;
-        end
+    if flag
+        delete(p)
+        blank_hex = [params.basePath filesep 'hexFiles' filesep 'blank.ino.hex'];
+        [~, cmdOut] = loadArduinoSketch(params.com,blank_hex);
+        disp(cmdOut)
+         disp(['Total trials: ' num2str(trialNo)])
+        delete(instrfindall)
+        delete(p);
+        disp('Done');
     end
 end
-
-delete(instrfindall)
-delete(p);
-disp('Done');
 
 
 
@@ -126,3 +128,15 @@ npts=dur*sf;
 inc=2*pi*f/sf;
 x=(0:npts-1)*inc+ph;
 x=cos(x);
+
+function flag = check_keyboard
+% Exit statement
+[~,~,keyCode] = KbCheck;
+flag = false;
+if sum(keyCode) == 1
+    if strcmp(KbName(keyCode),'ESCAPE')
+        flag = true;
+    end
+else
+    flag = false;
+end
