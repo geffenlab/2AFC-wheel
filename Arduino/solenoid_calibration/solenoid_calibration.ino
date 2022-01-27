@@ -5,7 +5,7 @@ void setup() {
   // put your setup code here, to run once:
   pinMode(pin, OUTPUT);
 
-  Serial.begin(9600);
+  Serial.begin(19200);
 }
 
 void loop() {
@@ -24,7 +24,7 @@ void loop() {
     for (int i = 1; i <= 50; i++) {
       Serial.println(i);
       digitalWrite(pin, HIGH);
-      delay(150);
+      delay(160);
       digitalWrite(pin, LOW);
       delay(50);
     }

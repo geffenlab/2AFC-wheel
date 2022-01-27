@@ -31,7 +31,7 @@ params.taskType = 'training';
 % booth specific parameters
 params.boothID = 'booth1';
 params.com = 'COM4';
-params.rewardDuration = 148;
+params.rewardDuration = 150;
 params.rotaryDebounce = 10;
 params.holdTimeMin = 1000;
 params.holdTimeMax = 1500;
@@ -59,7 +59,7 @@ params.filt_right = FILT;
 % task parameters
 params.holdDuration       = 1;
 params.respDuration       = 1;
-params.timeoutDuration    = 1000;
+params.timeoutDuration    = 3000;
 params.trialTypeRatios    = [50 50];
 params.rewardContingency  = [1 2];
 params.timeOutContingency = [1 1];

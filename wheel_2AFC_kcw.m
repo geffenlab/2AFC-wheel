@@ -132,9 +132,10 @@ while cnt < 2000
                 rewardType = 99; % arduino randomly rewards
             end
             ttCounter = ttCounter+1; % increase trial type counter
+            fprintf(fid,'\n%s',sprintf('%04dCORRECTIONTRIAL%d',trialNumber,0));
         elseif newTrial== 0  % continue with same sound if not had too many correction trials
             correctionTrial = 1;
-            fprintf(fid,'\n%s',sprintf('%04dCORRECTIONTRIAL',trialNumber));
+            fprintf(fid,'\n%s',sprintf('%04dCORRECTIONTRIAL%d',trialNumber,1));
         end
 
         % reshuffle trial type if all trials are presented
