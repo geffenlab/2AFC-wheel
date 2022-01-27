@@ -172,10 +172,7 @@ void loop() {
 
         while (sc == HIGH) {
           sc = digitalRead(soundCardInput);
-        }
-
-        while (sc == LOW) { // if it is low, wait for it to be high
-          sc = digitalRead(soundCardInput);
+        
         }
 
         time = micros();

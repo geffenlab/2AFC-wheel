@@ -4,7 +4,7 @@ params.taskType = 'Habituation';
 % booth parameters
 params.boothID = 'booth1';
 params.com = 'COM4';
-params.rewardDuration = 135;
+params.rewardDuration = 148;
 params.rotaryDebounce = 5;
 params.device = 'Lynx E44';
 params.channel = [1 2 3 4];

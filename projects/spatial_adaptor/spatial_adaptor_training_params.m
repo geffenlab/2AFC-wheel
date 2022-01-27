@@ -31,8 +31,10 @@ params.taskType = 'training';
 % booth specific parameters
 params.boothID = 'booth1';
 params.com = 'COM4';
-params.rewardDuration = 135;
+params.rewardDuration = 148;
 params.rotaryDebounce = 10;
+params.holdTimeMin = 1000;
+params.holdTimeMax = 1500;
 params.device = 'Lynx E44';
 params.channel = [1 2 3 4];
 params.fs = 192e3;
@@ -55,9 +57,9 @@ load([params.filtdir filesep params.filtFile_right]);
 params.filt_right = FILT;
 
 % task parameters
-params.holdDuration       = 1.5;
+params.holdDuration       = 1;
 params.respDuration       = 1;
-params.timeoutDuration    = 7000;
+params.timeoutDuration    = 1000;
 params.trialTypeRatios    = [50 50];
 params.rewardContingency  = [1 2];
 params.timeOutContingency = [1 1];

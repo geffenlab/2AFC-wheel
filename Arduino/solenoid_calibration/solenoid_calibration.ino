@@ -1,5 +1,5 @@
 const int pin = 9;
-int state = 48;
+int state = 48; // zero on the keyboard
 int i = 1;
 void setup() {
   // put your setup code here, to run once:
@@ -24,7 +24,7 @@ void loop() {
     for (int i = 1; i <= 50; i++) {
       Serial.println(i);
       digitalWrite(pin, HIGH);
-      delay(135);
+      delay(150);
       digitalWrite(pin, LOW);
       delay(50);
     }

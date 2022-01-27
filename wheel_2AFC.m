@@ -15,7 +15,7 @@ params.hexFile = [params.basePath filesep 'hexFiles' filesep 'wheel_interrupter_
 params.dataPath = [params.basePath filesep 'mice' filesep mouse];
 git = strfind(params.basePath,'GitHub');
 params.githubPath = params.basePath(1:git+5);
-params.sessID = datestr(now,'yyyymmdd');
+params.sessID = datestr(now,'yyyymmdd_HHMM');
 
 % load parameters
 if contains(parameterFile,'.txt')
@@ -93,7 +93,7 @@ while ~flag
     flag = check_keyboard;
     %     x = p.BytesAvailable;
     %     if x
-    out = serialRead(p);
+    out = serialRead(p)
     if strcmp(out,'start')
         % at the trial start:
 
@@ -139,6 +139,8 @@ while ~flag
         % send trial info to arduino and check that it was received
         fprintf(p,'%i\n%i',[rewardType,giveTO]);
         ttr = serialRead(p);
+        out = 'nothing';
+%         fprintf('ttr %s',ttr)
 
     elseif strcmp(out,'mouseStill')
         % once the mouse stopped moving the wheel:
@@ -146,9 +148,11 @@ while ~flag
         % wait for arduino to send data
         mouseStillTime = serialRead(p);
         fprintf('\tMouse still for 1.5s: %i\n',str2double(mouseStillTime));
+        pause(0.1)
 
         % present the audio
         startOutput(s,params.device);
+        pause(0.1)
 
         % wait for the sound onset
         soundOnset = serialRead(p);
@@ -159,8 +163,9 @@ while ~flag
         fprintf('\tOffset event: %i\n',str2double(soundOffset));
 
     elseif strcmp(out,'waitForResp')
-        %         x = p.BytesAvailable;
-        %         if x
+        
+%         x = p.BytesAvailable;
+%         if x
         % wait for the mouse response, determine RT and correct
         responseTime = serialRead(p);
         wheelDirection = serialRead(p);

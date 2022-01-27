@@ -1,3 +1,28 @@
+%% 19 Jan 2022 solenoid calibration after leak fixed
+baseline_weight = 1.1308;
+n = [100 100 100]; % number of valve openings
+delay = [135 135 150]; % ms
+weight = [1.5148 1.5517 1.6436]; % weight with water from testing
+ul_opening = zeros(size(weight));
+for ii = 1:length(delay)
+    ul_opening(ii) = (weight(ii)-baseline_weight)/n(ii)*1000;
+end
+
+figure
+[~,i] = sort(delay);
+plot(delay(i),ul_opening(i),'ok','LineWidth',2)
+set(gca,'FontSize',14)
+xlabel('delay (ms)')
+ylabel('\mul per opening')
+axis tight
+
+mdl = fitlm(delay,ul_opening);
+pred_x = (50:1:200)';
+pred_ul = predict(mdl,pred_x);
+hold on;
+plot(pred_x,pred_ul,'r-','LineWidth',2)
+
+fprintf('closest to 5 ul: %d ms\n',pred_x(knnsearch(pred_ul,5)))
 
 %% 10 Dec 2021 solenoid calibration after leak fixed
 baseline_weight = 1.1305;

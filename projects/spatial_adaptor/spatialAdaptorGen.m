@@ -105,12 +105,12 @@ stim = ([adaptor;target]);
 
 
 %% make events
-event_dur = .005 * stimInfo.fs; % 5 ms events for onset and offset
+% event_dur = .01 * stimInfo.fs; % 5 ms events for onset and offset
 % pad to add ending event
-stim = [stim; zeros(event_dur-1,2)];
-events = zeros(length(stim),1);
-events(1:event_dur) = 0.5;
-events(length(stim)-event_dur+1:length(stim)) = 0.5;
+% stim = [stim; zeros(event_dur-1,2)];
+events = ones(length(stim),1);
+% events(1:event_dur) = 1;
+% events(length(stim)-event_dur+1:length(stim)) = 1;
 
 stim = stim/10;
 stim = stim';
