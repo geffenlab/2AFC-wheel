@@ -134,6 +134,7 @@ while cnt < 2000
             ttCounter = ttCounter+1; % increase trial type counter
         elseif newTrial== 0  % continue with same sound if not had too many correction trials
             correctionTrial = 1;
+            fprintf(fid,'\n%s',sprintf('%04dCORRECTIONTRIAL',trialNumber));
         end
 
         % reshuffle trial type if all trials are presented
@@ -339,6 +340,7 @@ end
 if strcmp(params.device,'NIDAQ')
     stop(s);
 end
+print_beh_session_stats(fn)
 clear all %#ok<CLALL>
 disp('Done');
 
