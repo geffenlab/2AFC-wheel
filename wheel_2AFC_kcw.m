@@ -44,7 +44,7 @@ p = setupSerial(params.com);
 out = serialRead(p);
 
 % send variables to the arduino
-fprintf(p,'%f %f %f %f %f ',[params.rewardDuration params.timeoutDuration ...
+fprintf(p,'%f %d %f %f %f ',[params.rewardDuration params.timeoutDuration ...
     params.rotaryDebounce params.holdTimeMin params.holdTimeMax]);
 WaitSecs(.5);
 disp('parameters sent');
@@ -115,7 +115,7 @@ while cnt < 2000
 
     if contains(out,'TRIALON')
         % at the trial start:
-        fprintf('CORRECTION TRIAL? %d\n', correctionTrial)
+        trialNumber = trialNumber + 1;
         % check for correction trial
         if newTrial==1 && correctionTrial==0 % make a new stimulus
             correctionTrial = 0;
@@ -133,9 +133,11 @@ while cnt < 2000
             end
             ttCounter = ttCounter+1; % increase trial type counter
             fprintf(fid,'\n%s',sprintf('%04dCORRECTIONTRIAL%d',trialNumber,0));
+            fprintf('\n%s',sprintf('\n%04dCORRECTIONTRIAL%d\n',trialNumber,0));
         elseif newTrial== 0  % continue with same sound if not had too many correction trials
             correctionTrial = 1;
             fprintf(fid,'\n%s',sprintf('%04dCORRECTIONTRIAL%d',trialNumber,1));
+            fprintf('\n%s',sprintf('%04dCORRECTIONTRIAL%d\n',trialNumber,1));
         end
 
         % reshuffle trial type if all trials are presented
@@ -155,7 +157,7 @@ while cnt < 2000
         PsychPortAudio('FillBuffer',s,audio');
 
         % increment trial counter
-        trialNumber = trialNumber + 1;
+        
         fprintf('Trial %03d - %02d\n',trialNumber,tt);
 
         % work out audio duration
