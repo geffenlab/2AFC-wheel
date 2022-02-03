@@ -4,7 +4,7 @@ if resp==99
     resp = NaN;
 end
 
-outcome_smth = smooth(outcome,smoothing);
+outcome_smth = smooth(outcome(1:trialNumber),smoothing);
 
 %             figure(fh)
 subplot(1,2,1)
