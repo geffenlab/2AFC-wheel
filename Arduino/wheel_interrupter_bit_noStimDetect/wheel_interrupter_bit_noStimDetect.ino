@@ -8,7 +8,7 @@ int soundCardInput = 5;       // 2nd channel from sound card with events
 
 // timing variables:
 float rotaryDebounce;      // arbitrary number - how far the wheel needs to exceed previous position to count as moved
-float timeOut;            // ms
+long timeOut;            // ms
 float holdTimeMin;           // how long mouse must wait before trial starts min
 float holdTimeMax;        // how long mouse must wait before trial starts max
 float rewardTime;          // ms
@@ -319,14 +319,14 @@ void loop() {
 
         //     Serial.println("timeout");
         long timer = 0;
-        t1 = millis();
+        t1 = micros();
         Serial.print(trialStr);
         Serial.print("TOON ");
         Serial.println(t);
-        while ((long) (timer - t1) < timeOut) {
-          timer = millis();
+        while ((long) (timer - t1) < (timeOut*1000)) {
+          timer = micros();
         }
-        t1 = millis();
+        t1 = micros();
         Serial.print(trialStr);
         Serial.print("TOOFF ");
         Serial.println(t);

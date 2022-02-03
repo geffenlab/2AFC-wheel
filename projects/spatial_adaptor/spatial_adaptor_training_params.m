@@ -35,6 +35,9 @@ params.rewardDuration = 150;
 params.rotaryDebounce = 10;
 params.holdTimeMin = 1000;
 params.holdTimeMax = 1500;
+% params.holdDuration       = 1;
+% params.respDuration       = 1;
+params.timeoutDuration    = 1000;
 params.device = 'Lynx E44';
 params.channel = [1 2 3 4];
 params.fs = 192e3;
@@ -57,9 +60,6 @@ load([params.filtdir filesep params.filtFile_right]);
 params.filt_right = FILT;
 
 % task parameters
-params.holdDuration       = 1;
-params.respDuration       = 1;
-params.timeoutDuration    = 3000;
 params.trialTypeRatios    = [50 50];
 params.rewardContingency  = [1 2];
 params.timeOutContingency = [1 1];
@@ -67,6 +67,6 @@ params.timeOutContingency = [1 1];
 % fix some other things
 stimInfo.FILT_left = params.filt_left;
 stimInfo.FILT_right = params.filt_right;
-stimInfo.respDuration = params.respDuration;
+% stimInfo.respDuration = params.respDuration;
 
 % save('C:\Users\Maria\Documents\MATLAB\Calibration\20211206_2afcwheel_calibration\SA_params.mat','stimInfo');
