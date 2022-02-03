@@ -1,4 +1,4 @@
-fid = fopen('D:\behavior\mice\_test\_test_20220126_1729_training.txt');
+fid = fopen('D:\Github\2AFC-wheel\mice\K197\K197_20220127_1407_training.txt');
 C = textscan(fid,'%s');
 fclose(fid);
 
@@ -13,3 +13,6 @@ tt = str2double(out(ind));
 
 ind = contains(C{1},'TRIALOUTCOME');
 to = str2double(out(ind));
+
+ind = contains(C{1},'RESPTIME');
+rt = str2double(out(ind));
