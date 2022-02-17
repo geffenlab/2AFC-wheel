@@ -19,11 +19,11 @@ ct(i) = [];
 
 ind = contains(C{1},'TRIALOUTCOME');
 to = str2double(out(ind));
-if length(ct)-1==length(to)
-    ct = ct(1:end-1);
-    cti = false(length(ct),1); cti(ct) = true;
-    nctpc = mean(to(~cti))*100;
-end
+% if length(ct)-1==length(to)
+%     ct = ct(1:end-1);
+%     cti = false(length(ct),1); cti(ct) = true;
+%     nctpc = mean(to(~cti))*100;
+% end
 
 ind = contains(C{1},'REWON');
 n_rew = sum(ind);
@@ -31,5 +31,5 @@ n_rew = sum(ind);
 fprintf('Number of rewards: %d\n',n_rew);
 fprintf('Total trials: %d\n',length(to));
 fprintf('%% Correct: %0.0f%%\n', mean(to)*100);
-fprintf('%% Correct (non-correction trials): %0.0f%%\n',nctpc);
+% fprintf('%% Correct (non-correction trials): %0.0f%%\n',nctpc);
 

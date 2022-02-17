@@ -1,3 +1,56 @@
+%% 14 Feb 2022 solenoid calibration 
+baseline_weight = 1.1308;
+n = [100 100 100 100 100]; % number of valve openings
+delay = [160 160 180 180 200]; % ms
+weight = [1.4526 1.4438 1.4731 1.4758 1.5070]; % weight with water from testing
+ul_opening = zeros(size(weight));
+for ii = 1:length(delay)
+    ul_opening(ii) = (weight(ii)-baseline_weight)/n(ii)*1000;
+end
+
+figure
+[~,i] = sort(delay);
+plot(delay(i),ul_opening(i),'ok','LineWidth',2)
+set(gca,'FontSize',14)
+xlabel('delay (ms)')
+ylabel('\mul per opening')
+axis tight
+
+mdl = fitlm(delay,ul_opening);
+pred_x = (50:1:250)';
+pred_ul = predict(mdl,pred_x);
+hold on;
+plot(pred_x,pred_ul,'r-','LineWidth',2)
+
+fprintf('closest to 5 ul: %d ms\n',pred_x(knnsearch(pred_ul,5)))
+
+%% 07 Feb 2022 solenoid calibration 
+baseline_weight = 1.1307;
+n = [100 100]; % number of valve openings
+delay = [150 170]; % ms
+weight = [1.5187 1.5592]; % weight with water from testing
+ul_opening = zeros(size(weight));
+for ii = 1:length(delay)
+    ul_opening(ii) = (weight(ii)-baseline_weight)/n(ii)*1000;
+end
+
+figure
+[~,i] = sort(delay);
+plot(delay(i),ul_opening(i),'ok','LineWidth',2)
+set(gca,'FontSize',14)
+xlabel('delay (ms)')
+ylabel('\mul per opening')
+axis tight
+
+mdl = fitlm(delay,ul_opening);
+pred_x = (50:1:250)';
+pred_ul = predict(mdl,pred_x);
+hold on;
+plot(pred_x,pred_ul,'r-','LineWidth',2)
+
+fprintf('closest to 5 ul: %d ms\n',pred_x(knnsearch(pred_ul,5)))
+
+
 %% 27 Jan 2022 solenoid calibration after leak fixed
 baseline_weight = 1.1307;
 n = [100 100]; % number of valve openings

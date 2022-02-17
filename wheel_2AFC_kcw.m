@@ -91,6 +91,12 @@ ctCounter = 0; % correction trial counter
 flag = false;
 resp = [];
 
+% beh tracking
+respTime_track = zeros(1000,1);
+outcome_track = zeros(1000,1);
+figure
+hold all
+
 % trial loop
 abort = false;
 abortFlag = false;
@@ -172,14 +178,15 @@ while cnt < 2000
         PsychPortAudio('Start',s,1);
 %         disp('presenting audio')
 %         plot(audio); drawnow;
-        %         out = 'nothing';
-        %         % wait for the sound onset
-        %         soundOnset = serialRead(p);
-        %         fprintf('\tOnset event: %i\n',str2double(soundOnset));
-        %
-        %         % wait for the 2nd event
-        %         soundOffset = serialRead(p);
-        %         fprintf('\tOffset event: %i\n',str2double(soundOffset));
+
+    elseif contains(out,'STIMOFF')
+        d = regexp(out,'\d');
+        d = d(5:end);
+        stimOff = str2double(out(d));
+    elseif contains(out,'RESPTIME')
+        d = regexp(out,'\d');
+        d = d(5:end);
+        respTime = str2double(out(d));
 
     elseif contains(out,'TRIALOUTCOME')
 
@@ -187,20 +194,10 @@ while cnt < 2000
         d = d(5:end);
         responseOutcome = str2double(out(d));
 
-        %         x = p.BytesAvailable;
-        %         if x
-        %         % wait for the mouse response, determine RT and correct
-        %         responseTime = serialRead(p);
-        %         wheelDirection = serialRead(p);
-        %         wheelDirection = str2double(wheelDirection)<0;
-        %         responseOutcome = serialRead(p);
-        %
-        %         fprintf('\tTrial correct: %s\n',responseOutcome);
-        %         fprintf('\tResponse time: %g\n', (str2double(responseTime)-str2double(soundOffset))/1e6);
-
-        %         pause(.25)
-
-
+        outcome_track(trialNumber) = responseOutcome;
+%         disp(outcome_track)
+        respTime_track(trialNumber) = (respTime-stimOff)/1000000;
+        updateGraph(trialNumber,correctionTrial,outcome_track,respTime_track(trialNumber),15)
 
         % determine next trialType
         if responseOutcome==1  % if correct or trialType requires no timeout

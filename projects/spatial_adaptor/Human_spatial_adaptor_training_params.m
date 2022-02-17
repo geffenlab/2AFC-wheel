@@ -10,10 +10,10 @@ stimInfo.adaptor_dur        = 0.5;              % adaptor duration in s
 stimInfo.adaptor_pip_dur    = 0.005;           % duration of individual adaptor pips
 stimInfo.adaptor_level      = 60;               % mean level dB
 stimInfo.adaptor_bandwidth  = [5 60];        % adaptor bandwidth in kHz
-stimInfo.target_dur         = 0.2;              % target duration in s
+stimInfo.target_dur         = 0.4;              % target duration in s
 stimInfo.target_level       = 60;               % mean level dB
 stimInfo.target_ILDs        = [-30,30];        % ILD of target
-stimInfo.target_bandwidth   = [10 40];        % target bandwidth in kHz
+stimInfo.target_bandwidth   = [5 10];        % target bandwidth in kHz
 stimInfo.envDur             = 0.005;            % duration of envelope in s
 stimInfo.stimFunction       = 'spatialAdaptorGen'; % stimulus function
 
@@ -31,7 +31,7 @@ params.taskType = 'training';
 % booth specific parameters
 params.boothID = 'booth1';
 params.com = 'COM4';
-params.rewardDuration = 250;
+params.rewardDuration = 205;
 params.rotaryDebounce = 10;
 params.holdTimeMin = 1000;
 params.holdTimeMax = 1500;
@@ -46,8 +46,8 @@ params.filtFile_right = '220210_2afc_RIGHTspk_LynxE44_5k-60k_fs192k_FLATNOISE';
 params.ampF = 10/11;
 params.leftspk_adaptor_offset = -1.1;
 params.rightspk_adaptor_offset = -1;
-params.leftspk_target_offset = 2;
-params.rightspk_target_offset = 2;
+params.leftspk_target_offset = 5;
+params.rightspk_target_offset = 5;
 
 % filter
 params.filtdir = [params.githubPath '\filters'];

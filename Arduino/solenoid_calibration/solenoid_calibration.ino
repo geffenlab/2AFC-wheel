@@ -24,7 +24,7 @@ void loop() {
     for (int i = 1; i <= 50; i++) {
       Serial.println(i);
       digitalWrite(pin, HIGH);
-      delay(160);
+      delay(200);
       digitalWrite(pin, LOW);
       delay(50);
     }
