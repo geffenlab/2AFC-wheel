@@ -319,14 +319,14 @@ void loop() {
 
         //     Serial.println("timeout");
         long timer = 0;
-        t1 = micros();
+        t = micros();
         Serial.print(trialStr);
         Serial.print("TOON ");
         Serial.println(t);
-        while ((long) (timer - t1) < (timeOut*1000)) {
+        while ((long) (timer - t) < (timeOut*1000)) {
           timer = micros();
         }
-        t1 = micros();
+        t = micros();
         Serial.print(trialStr);
         Serial.print("TOOFF ");
         Serial.println(t);
@@ -349,6 +349,7 @@ void loop() {
       }
 
     case 9: {// TRIAL END
+        t = micros();
         Serial.print(trialStr);
         Serial.print("TRIALEND ");
         Serial.println(t);
