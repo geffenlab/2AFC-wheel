@@ -4,17 +4,17 @@ hold on
 %     resp = NaN;
 % end
 
-<<<<<<< Updated upstream
-if resp==99
-    resp = NaN;
-end
+% <<<<<<< Updated upstream
+% if resp==99
+%     resp = NaN;
+% end
 
-outcome_smth = smooth(outcome(1:trialNumber),smoothing);
-=======
+% outcome_smth = smooth(outcome(1:trialNumber),smoothing);
+% =======
 % outcome_smth = smooth(outcome,smoothing);
-outcome_smth = zeros(trialNumber,1);
+% outcome_smth = zeros(trialNumber,1);
 outcome_smth(trialNumber) = mean(outcome(1:trialNumber));
->>>>>>> Stashed changes
+% >>>>>>> Stashed changes
 
 %             figure(fh)
 subplot(1,2,1)
