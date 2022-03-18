@@ -47,8 +47,8 @@ void setup() {
   Serial.println("serial_established");
 
   // Set pins 0..7 as INPUTS using the register
-  DDRD = B00000000;    // Note that 0 and 1 are TX and RX for serial comms.
-  DDRB = B00000111; //channels 8, 9 & 10 as outputs
+  DDRD = B00000000;     // Note that 0 and 1 are TX and RX for serial comms.
+  DDRB = B00000111;     //channels 8, 9 & 10 as outputs
 
   // retrieve parameters from matlab
   int done = 0;
@@ -82,14 +82,14 @@ void setup() {
     }
   }
 
-  // assign pin modes
-  pinMode(solenoidOut_0, OUTPUT);
-  pinMode(solenoidOut_1, OUTPUT);
-  pinMode(solenoidOut_2, OUTPUT);
-  pinMode(AudioEventsInput, INPUT);
-  pinMode(photoInput_0, INPUT);
-  pinMode(photoInput_1, INPUT);
-  pinMode(photoInput_2, INPUT);
+//  // assign pin modes
+//  pinMode(solenoidOut_0, OUTPUT);
+//  pinMode(solenoidOut_1, OUTPUT);
+//  pinMode(solenoidOut_2, OUTPUT);
+//  pinMode(AudioEventsInput, INPUT);
+//  pinMode(photoInput_0, INPUT);
+//  pinMode(photoInput_1, INPUT);
+//  pinMode(photoInput_2, INPUT);
 
   sprintf(trialStr, "%04d ", trialCnt);
   Serial.print(trialStr);
@@ -178,9 +178,9 @@ void loop() {
         // Start a timer to check that the sound input is received. 
 
           // Serial.println("STATE3");
-          sc = digitalRead(AudioEventsInput); // read the input from sound card
+          inputRegD = PIND; // read the input from sound card
 
-          if (sc == HIGH) { // if it is low, wait for it to be high
+          if (inputRegD == AudioEventsInput | inputRegD == audio_photo_1) { // if it is low, wait for it to be high
             t = micros();
             Serial.print(trialStr);
             Serial.print("STIMON ");
@@ -204,9 +204,9 @@ void loop() {
     case 4: {// MONITOR FOR SOUND OFFSET
 
         // Serial.println("STATE4");
-        sc = digitalRead(soundCardInput); // read the input from sound card
+        inputRegD = PIND; // read the input from sound card
 
-        if (sc == LOW) {
+        if (inputRegD != AudioEventsInput | inputRegD == photoInput_1) {
           t = micros();
           Serial.print(trialStr);
           Serial.print("STIMOFF ");
