@@ -9,8 +9,6 @@ int AudioEventsInput = 4;       // events from nidaq/soundcard
 int photoInput_0 = 5            // left nosepoke
 int photoInput_1 = 6            // centre nosepoke
 int photoInput_2 = 7            // right nosepoke
-// setup port reading
-byte inputRegD;
 
 
 // timing variables:
@@ -41,12 +39,9 @@ int audioDur;
 
 void setup() {
 
-  Serial.begin(115200);
+  Serial.begin(19200);
   Serial.read();
   Serial.println("serial_established");
-
-  // Set pins 0..7 as INPUTS using the register
-  DDRD = B00000000;    // Note that 0 and 1 are TX and RX for serial comms.
 
   // retrieve parameters from matlab
   int done = 0;
@@ -102,11 +97,13 @@ void setup() {
 }
 
 void loop() {
-  switch (state) {
+  switch (bstate) {
 
     case 1: {// RECEIVE TRIAL TYPE FROM MATLAB
 
-        // receive input from matlab/python saying the type of trial it is
+
+
+        // receive input from matlab saying the type of trial it is
         Serial.read();
         int done = 0;
         float val[3];
@@ -134,36 +131,41 @@ void loop() {
               Serial.print(trialStr);
               Serial.print("HOLDTIME ");
               Serial.println(holdTime);
-              state = 2;
+              bstate = 2;
               break;
             }
           }
         }
+
         break;
       }
 
     case 2: {// MONITOR CENTRAL NOSEPOKE UNTIL NOT BROKEN FOR HOLDTIME DURATION
 
-        signed long stateTimer = 0;
-        signed long t = millis();
+        oldRotaryPos = encoderValue;
+        signed long bstate1timer = 0;
+        signed long t1 = millis();
         //Serial.println(t1);
         //Serial.println(bstate1timer);
         //Serial.println(bstate1timer - t1);
         //Serial.println(holdTime);
         //Serial.println((bstate1timer - t1) < holdTime);
-        while ((stateTimer - t) < holdTime) {
+        while ( (bstate1timer - t1) < holdTime) {
           // wait for the mouse to not move the wheel for the hold time duration
-          stateTimer = millis();
+          bstate1timer = millis();
+          rotaryPos = encoderValue;
           //Serial.println(rotaryPos);
 
-          inputRegD = PIND;
-
+          if (rotaryPos != oldRotaryPos) {
+            t1 = millis();
+            oldRotaryPos = rotaryPos;
+          }
         }
         t = micros();
         Serial.print(trialStr);
-        Serial.print("ENDHOLDTIME ");
+        Serial.print("WHEELSTILL ");
         Serial.println(t);
-        state = 3;
+        bstate = 3;
 
         // Serial.println("STATE2");
         break;
@@ -171,24 +173,27 @@ void loop() {
 
     case 3: {// MONITOR DIGITAL INPUT FOR SOUND CARD INPUT TO SAY SOUND ON
 
-        // Start a timer to check that the sound input is received. 
+        // Start a timer to check that the sound input is received. It can be missed
+        // if the mouse turns the wheel for longer than the sound duration immediately
+        // after holding it still - in the tiny bit of time for matlab to trigger the
+        // sound
 
           // Serial.println("STATE3");
-          sc = digitalRead(AudioEventsInput); // read the input from sound card
+          sc = digitalRead(soundCardInput); // read the input from sound card
 
           if (sc == HIGH) { // if it is low, wait for it to be high
             t = micros();
             Serial.print(trialStr);
             Serial.print("STIMON ");
             Serial.println(t);
-            state = 4;
+            bstate = 4;
           }  else if ((millis() - (t/1000)) > audioDur) {
             // if the timer times out restart the trial
             t = micros();
             Serial.print(trialStr);
             Serial.print("NOAUDIOEVENT ");
             Serial.println(t);
-            state = 9;
+            bstate = 9;
           }
         
 
@@ -207,17 +212,18 @@ void loop() {
           Serial.print(trialStr);
           Serial.print("STIMOFF ");
           Serial.println(t);
-          state = 5;
+          bstate = 5;
         }
         break;
       }
 
-    case 5: { // MONITOR FOR RESPONSE
+    case 5: { // MONITOR THE WHEEL FOR RESPONSE
 
-        int resp = 0
-        while (resp == 0) {
-          PI_0 = digitalRead(photoInput_0);
-          PI_2 = digitalRead(photoInput_1);
+        oldRotaryPos = encoderValue;
+        rotaryDif = 0;
+        while (abs(rotaryDif) < rotaryDebounce) {
+          rotaryPos = encoderValue;
+          rotaryDif = rotaryPos - oldRotaryPos;
         }
         t = micros();
         Serial.print(trialStr);

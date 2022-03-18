@@ -2,13 +2,14 @@
 
 // ASSIGN PINS
 //these pins can not be changed 2/3 are special pins
-int solenoidOut_0 = 8;
-int solenoidOut_1 = 9;
-int solenoidOut_2 = 10;
-int AudioEventsInput = 4;       // events from nidaq/soundcard
-int photoInput_0 = 5            // left nosepoke
-int photoInput_1 = 6            // centre nosepoke
-int photoInput_2 = 7            // right nosepoke
+byte const solenoidOut_0 = 1;         // left solenoid
+byte const solenoidOut_1 = 2;         // center solenoid
+byte const solenoidOut_2 = 4;         // right solenoid
+int const AudioEventsInput = 19;      // events from nidaq/soundcard
+int const photoInput_0 = 35;          // left nosepoke
+int const photoInput_1 = 67;          // centre nosepoke
+int const photoInput_2 = 131;         // right nosepoke
+int const audio_photo_1 = 83;         // center nosepoke and audio
 // setup port reading
 byte inputRegD;
 
@@ -47,6 +48,7 @@ void setup() {
 
   // Set pins 0..7 as INPUTS using the register
   DDRD = B00000000;    // Note that 0 and 1 are TX and RX for serial comms.
+  DDRB = B00000111; //channels 8, 9 & 10 as outputs
 
   // retrieve parameters from matlab
   int done = 0;
@@ -144,6 +146,7 @@ void loop() {
 
     case 2: {// MONITOR CENTRAL NOSEPOKE UNTIL NOT BROKEN FOR HOLDTIME DURATION
 
+        inputRegD = PIND;
         signed long stateTimer = 0;
         signed long t = millis();
         //Serial.println(t1);
@@ -151,7 +154,8 @@ void loop() {
         //Serial.println(bstate1timer - t1);
         //Serial.println(holdTime);
         //Serial.println((bstate1timer - t1) < holdTime);
-        while ((stateTimer - t) < holdTime) {
+        
+        while ((stateTimer - t) < holdTime & inputRegD==photoInput_1) {
           // wait for the mouse to not move the wheel for the hold time duration
           stateTimer = millis();
           //Serial.println(rotaryPos);
