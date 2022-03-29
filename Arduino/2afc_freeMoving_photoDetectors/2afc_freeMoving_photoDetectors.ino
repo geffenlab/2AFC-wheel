@@ -5,7 +5,7 @@
 byte const solenoidOut_0 = 1;         // left solenoid
 byte const solenoidOut_1 = 2;         // center solenoid
 byte const solenoidOut_2 = 4;         // right solenoid
-int const AudioEventsInput = 19;      // events from nidaq/soundcard
+int const AudioEventsInput = 19;      // events from nidaq/soundcard alone
 int const photoInput_0 = 35;          // left nosepoke
 int const photoInput_1 = 67;          // centre nosepoke
 int const photoInput_2 = 131;         // right nosepoke
@@ -52,44 +52,41 @@ void setup() {
 
   // retrieve parameters from matlab
   int done = 0;
-  float val[5];
+  float val[4];
   int cnt = 0;
   while (!done) {
     while (Serial.available() > 0) {
       val[cnt] = Serial.parseFloat();
       cnt++;
-      if (cnt > 4) {
+      if (cnt > 3) {
         done = 1;
         rewardTime      = val[0];
         timeOut         = val[1];
-        rotaryDebounce  = val[2];
-        holdTimeMin     = val[3];
-        holdTimeMax     = val[4];
+        holdTimeMin     = val[2];
+        holdTimeMax     = val[3];
 
 
         Serial.print("REWTIME ");
         Serial.println(val[0]);
         Serial.print("TOTIME ");
         Serial.println(val[1]);
-        Serial.print("DEBOUNCE ");
-        Serial.println(val[2]);
         Serial.print("HOLDTIMEMIN ");
-        Serial.println(val[3]);
+        Serial.println(val[2]);
         Serial.print("HOLDTIMEMAX ");
-        Serial.println(val[4]);
+        Serial.println(val[3]);
         break;
       }
     }
   }
 
-//  // assign pin modes
-//  pinMode(solenoidOut_0, OUTPUT);
-//  pinMode(solenoidOut_1, OUTPUT);
-//  pinMode(solenoidOut_2, OUTPUT);
-//  pinMode(AudioEventsInput, INPUT);
-//  pinMode(photoInput_0, INPUT);
-//  pinMode(photoInput_1, INPUT);
-//  pinMode(photoInput_2, INPUT);
+  //  // assign pin modes
+  //  pinMode(solenoidOut_0, OUTPUT);
+  //  pinMode(solenoidOut_1, OUTPUT);
+  //  pinMode(solenoidOut_2, OUTPUT);
+  //  pinMode(AudioEventsInput, INPUT);
+  //  pinMode(photoInput_0, INPUT);
+  //  pinMode(photoInput_1, INPUT);
+  //  pinMode(photoInput_2, INPUT);
 
   sprintf(trialStr, "%04d ", trialCnt);
   Serial.print(trialStr);
@@ -147,57 +144,58 @@ void loop() {
     case 2: {// MONITOR CENTRAL NOSEPOKE UNTIL NOT BROKEN FOR HOLDTIME DURATION
 
         inputRegD = PIND;
-        signed long stateTimer = 0;
-        signed long t = millis();
-        //Serial.println(t1);
-        //Serial.println(bstate1timer);
-        //Serial.println(bstate1timer - t1);
-        //Serial.println(holdTime);
-        //Serial.println((bstate1timer - t1) < holdTime);
-        
-        while ((stateTimer - t) < holdTime & inputRegD==photoInput_1) {
-          // wait for the mouse to not move the wheel for the hold time duration
-          stateTimer = millis();
-          //Serial.println(rotaryPos);
+        if (inputRegD == photoInput_1) {  // wait for mouse to do center nose-poke
+          signed long stateTimer = 0;     // start timer at zero
+          signed long t = millis();       // Mark time at which timer started
+          bool contact = true;            // Mouse in contact with center nosepoke
 
-          inputRegD = PIND;
+          // run the timer until the mouse has been at the center for the hold time           
+          while ((stateTimer - t) < holdTime & inputRegD == photoInput_1) { 
+            stateTimer = millis();        // update the timer
+            inputRegD = PIND;             // read the input pins
+            
+            // if the mouse breaks contact with the center nosepoke break out of the while loop and restart
+            if (inputRegD != photoInput_1) {  
+              contact = false;
+              break;
+            }
+          }
 
+          // if the mouse maintained contact for the hold time, present the stimulus (state 3)
+          if (contact) {
+            t = micros();
+            Serial.print(trialStr);
+            Serial.print("ENDHOLDTIME ");
+            Serial.println(t);
+            state = 3;
+          }
+
+          // Serial.println("STATE2");
         }
-        t = micros();
-        Serial.print(trialStr);
-        Serial.print("ENDHOLDTIME ");
-        Serial.println(t);
-        state = 3;
-
-        // Serial.println("STATE2");
         break;
       }
 
-    case 3: {// MONITOR DIGITAL INPUT FOR SOUND CARD INPUT TO SAY SOUND ON
+    case 3: { // Detect audio presentation
 
-        // Start a timer to check that the sound input is received. 
+        // Serial.println("STATE3");
+        inputRegD = PIND; // read the input from sound card
 
-          // Serial.println("STATE3");
-          inputRegD = PIND; // read the input from sound card
-
-          if (inputRegD == AudioEventsInput | inputRegD == audio_photo_1) { // if it is low, wait for it to be high
-            t = micros();
-            Serial.print(trialStr);
-            Serial.print("STIMON ");
-            Serial.println(t);
-            state = 4;
-          }  else if ((millis() - (t/1000)) > audioDur) {
-            // if the timer times out restart the trial
-            t = micros();
-            Serial.print(trialStr);
-            Serial.print("NOAUDIOEVENT ");
-            Serial.println(t);
-            state = 9;
-          }
-        
-
-
-
+        if (inputRegD == audio_photo_1) { // mouse is at center and sound is presented
+          t = micros();
+          Serial.print(trialStr);
+          Serial.print("STIMON ");
+          Serial.println(t);
+          state = 4;
+        } else if (inputRegD == AudioEventsInput) { // mouse is not at the center but sound has been presented
+          
+        }  else if ((millis() - (t / 1000)) > audioDur) {
+          // if the timer times out restart the trial
+          t = micros();
+          Serial.print(trialStr);
+          Serial.print("NOAUDIOEVENT ");
+          Serial.println(t);
+          state = 9;
+        }
         break;
       }
 
@@ -218,7 +216,7 @@ void loop() {
 
     case 5: { // MONITOR FOR RESPONSE
 
-        int resp = 0
+        int resp = 0;
         while (resp == 0) {
           PI_0 = digitalRead(photoInput_0);
           PI_2 = digitalRead(photoInput_1);
@@ -284,7 +282,7 @@ void loop() {
         Serial.print(trialStr);
         Serial.print("TOON ");
         Serial.println(t);
-        while ((long) (timer - t) < (timeOut*1000)) {
+        while ((long) (timer - t) < (timeOut * 1000)) {
           timer = micros();
         }
         t = micros();
@@ -334,23 +332,25 @@ void loop() {
   }
 }
 
-void isrA() {
-  if (readB != readA) {
-    encoderValue ++;
-  } else {
-    encoderValue --;
-  }
-}
-
-void isrB() {
-  if (readA == readB) {
-    encoderValue ++;
-  } else {
-    encoderValue --;
-  }
-}
+bool mouse_center() { //
+  return (inputRegD == photoInput_1 | inputRegD == audio_photo_1);
 
 
+//void isrA() {
+//  if (readB != readA) {
+//    encoderValue ++;
+//  } else {
+//    encoderValue --;
+//  }
+//}
+//
+//void isrB() {
+//  if (readA == readB) {
+//    encoderValue ++;
+//  } else {
+//    encoderValue --;
+//  }
+//}
 
 
 //void updateEncoder() {
