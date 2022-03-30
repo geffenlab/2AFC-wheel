@@ -2,6 +2,7 @@
 
 // ASSIGN PINS
 //these pins can not be changed 2/3 are special pins
+byte const no_output = 0;             // no output
 byte const solenoidOut_0 = 1;         // left solenoid
 byte const solenoidOut_1 = 2;         // center solenoid
 byte const solenoidOut_2 = 4;         // right solenoid
@@ -104,8 +105,9 @@ void setup() {
 void loop() {
   switch (state) {
 
+    //********************************************************************//
     case 1: {// RECEIVE TRIAL TYPE FROM MATLAB
-
+      
         // receive input from matlab/python saying the type of trial it is
         Serial.read();
         int done = 0;
@@ -142,9 +144,10 @@ void loop() {
         break;
       }
 
+    //********************************************************************//
     case 2: {// MONITOR CENTRAL NOSEPOKE UNTIL NOT BROKEN FOR HOLDTIME DURATION
 
-        if  mouse_center() {  // wait for mouse to do center nose-poke
+        if  (mouse_center()) {  // wait for mouse to do center nose-poke
           signed long stateTimer = 0;     // start timer at zero
           signed long t = millis();       // Mark time at which timer started
           bool contact = true;            // Mouse in contact with center nosepoke
@@ -174,95 +177,117 @@ void loop() {
         }
         break;
       }
-
+    
+    //********************************************************************//
     case 3: { // MONITOR FOR SOUND ONSET AND OFFSET AND EARLY DEPARTURE
 
         // Serial.println("STATE3");
         inputRegD = PIND; // read the inputs
         float monitor_audio = millis() - (t / 1000);
         bool onset = false;
-        if (inputRegD == audio_photo_1 & monitor_audio <= audioDur & !onset) { // mouse is at center and sound comes on
-          t = micros();
-          Serial.print(trialStr);
-          Serial.print("STIMON ");
-          Serial.println(t);
-          onset = true;
-        } else if (inputRegD == AudioEventsInput & monitor_audio <= audioDur) { // mouse is not center and sound is presenting
-          t = micros();
-          Serial.print(trialStr);
-          Serial.print("EARLYDEP ");
-          Serial.println(t);
-          state = 2;
-        } else if (inputRegD == no_input & monitor_audio <= audioDur) { // there is no sound input and the mouse is not center
-          t = micros();
-          Serial.print(trialStr);
-          Serial.print("EARLYDEP ");
-          Serial.println(t);
-          state = 2;
-        } else if (monitor_audio > audioDur) { // audio has finished
-          t = micros();
-          Serial.print(trialStr);
-          Serial.print("STIMOFF ");
-          Serial.println(t);
-          state = 4;
-        }  else if (inputRegD == audio_photo_1 & monitor_audio > audioDur & !onset) { // mouse has waited but no sound onset detected
-          // if the timer times out restart the trial
+
+        // while sound has not completed
+        while (monitor_audio<= audioDur){             
+          monitor_audio = millis() - (t / 1000);
+
+          // mouse is at center and sound comes on
+          if (inputRegD == audio_photo_1 & !onset) {  
+            t = micros();
+            Serial.print(trialStr);
+            Serial.print("STIMON ");
+            Serial.println(t);
+            onset = true;
+
+            // mouse is not center and sound is presenting
+          } else if (inputRegD == AudioEventsInput) { 
+            t = micros();
+            Serial.print(trialStr);
+            Serial.print("EARLYDEP ");
+            Serial.println(t);
+            state = 2;
+
+            // there is no sound input and the mouse is not center
+          } else if (inputRegD == no_input) {         
+            t = micros();
+            Serial.print(trialStr);
+            Serial.print("EARLYDEP ");
+            Serial.println(t);
+            state = 2;
+          }
+        }
+
+        // mouse has waited but no sound onset detected
+        if (!onset) {                               
           t = micros();
           Serial.print(trialStr);
           Serial.print("NOAUDIOEVENT ");
           Serial.println(t);
           state = 8;
+
+          // audio has finished
+        } else { 
+          t = micros();
+          Serial.print(trialStr);
+          Serial.print("STIMOFF ");
+          Serial.println(t);
+          state = 4;
         }
+        
         break;
       }
 
+    //********************************************************************//
     case 4: { // MONITOR FOR RESPONSE
         
-        inputRegD = PIND; // read the inputs
-    
-        int resp = 0;
-        while (resp == 0) {
-          PI_0 = digitalRead(photoInput_0);
-          PI_2 = digitalRead(photoInput_1);
+        int resp = false;
+        while (!resp) {
+          inputRegD = PIND; // read the inputs
+          if (inputRegD == photoInput_0) {
+            t = micros();
+            respDir = 1;            // mouse responded left
+            resp = true;
+          } else if (inputRegD == photoInput_2) {
+            t = micros();
+            respDir = 2;            // mouse responded right
+            resp = true;
+          }
         }
-        t = micros();
+
         Serial.print(trialStr);
         Serial.print("RESPTIME ");
         Serial.println(t);
-        if (rotaryDif < 0) {          // CLOCKWISE TURN
-          respDir = 2;
-        } else if (rotaryDif > 1) {   // ANTI-CLOCKWISE TURN
-          respDir = 1;
-        }
-
         Serial.print(trialStr);
         Serial.print("RESPDIR ");
         Serial.println(respDir);
-        bstate = 5;
+        state = 5;
         break;
       }
 
+    //********************************************************************//
     case 5: { // RESPONSE LOGIC
 
-
-        if (trialType == respDir) { // CORRECT TRIAL
+        // CORRECT TRIAL
+        if (trialType == respDir) { 
           trialOutcome = 1;
-          bstate = 7;
+          state = 7;
 
-        } else if (trialType == 99) { // RANDOM REWARD TRIAL
+        // RANDOM REWARD TRIAL
+        } else if (trialType == 99) { 
           trialOutcome = 99;
           r = random(0, 1); // if this is (0,1) then there will be no rewards, if it is (0,2) there will be random rewards
           if (r > 0.5) {
-            bstate = 7;
+            state = 7;
           } else {
-            bstate = 8;
+            state = 8;
           }
-        } else { // INCORRECT TRIAL
+
+        // INCORRECT TRIAL
+        } else { 
           trialOutcome = 0;
           if (giveTO == 1) {
-            bstate = 6;
+            state = 6;
           } else if (giveTO == 0) {
-            bstate = 8;
+            state = 8;
           }
         }
 
@@ -273,11 +298,7 @@ void loop() {
         break;
       }
 
-
-
-
-
-
+    //********************************************************************//
     case 6: { // TIMEOUT
 
         //     Serial.println("timeout");
@@ -293,24 +314,32 @@ void loop() {
         Serial.print(trialStr);
         Serial.print("TOOFF ");
         Serial.println(t);
-        bstate = 8;
+        state = 8;
         break;
       }
 
+    //********************************************************************//
     case 7: { // REWARD
 
         t = micros();
-        digitalWrite(solenoidOut, HIGH); //open the solenoid
-        delay(rewardTime);
-        digitalWrite(solenoidOut, LOW); //close the solenoid
-
+        if (respDir == 1){      // left response
+          PORTB = solenoidOut_0;
+          delay(rewardTime);
+          PORTB = no_output;
+        } else if (respDir == 2){  // right response
+          PORTB = solenoidOut_2;
+          delay(rewardTime);
+          PORTB = no_output;
+        }
+        
         Serial.print(trialStr);
         Serial.print("REWON ");
         Serial.println(t);
-        bstate = 8;
+        state = 8;
         break;
       }
 
+    //********************************************************************//
     case 8: {// TRIAL END
         t = micros();
         Serial.print(trialStr);
@@ -330,7 +359,7 @@ void loop() {
           Serial.read();
         }
         //Serial.flush();
-        bstate = 1;
+        state = 1;
         break;
       }
   }
@@ -338,3 +367,4 @@ void loop() {
 
 bool mouse_center() { //
   return (inputRegD == photoInput_1 | inputRegD == audio_photo_1);
+}
