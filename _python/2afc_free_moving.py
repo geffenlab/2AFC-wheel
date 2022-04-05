@@ -9,21 +9,36 @@ Created on Fri Apr  1 10:48:43 2022
 
 import os
 import serial
+from scipy import io as scio
+import common_code as cc
+from datetime import datetime
 
 #%% temporary definitions
-mouse = 'test';
-baseDir = 'D:\\Github\\2AFC-wheel\\_python';
+mouse = 'test'
+baseDir = 'D:\\Github\\2AFC-wheel\\_python'
 os.chdir(baseDir)
-project = 'spatial_adaptation_free';
-parameterFile = os.path.join(baseDir,'projects\\spatial_adaptation\\spatial_adaptor_training_params')
+project = 'spatial_adaptation_free'
+parameterFile = 'SA_params.mat'
 
-#%% setup base directories etc
-cd(baseDir);
-params.basePath = pwd;
-params.projPath = [params.basePath filesep 'projects' filesep project];
-params.paramFile = [params.projPath filesep parameterFile];
-params.hexFile = [params.basePath filesep 'hexFiles' filesep 'wheel_interrupter_bit_noStimDetect.ino.hex'];
-params.dataPath = [params.basePath filesep 'mice' filesep mouse];
-git = strfind(params.basePath,'GitHub');
-params.githubPath = params.basePath(1:git+5);
-params.sessID = datestr(now,'yyyymmdd_HHMM');
+
+#%% load parameter file and setup base directories etc
+# load parameters
+beh_info = scio.loadmat(os.path.join(baseDir,'projects',project,parameterFile))
+params = cc.matlab_struct2dict(beh_info['params'])
+stimInfo = cc.matlab_struct2dict(beh_info['stimInfo'])
+
+# set new directories and paths to files in parameters
+os.chdir(baseDir)
+params['basePath'] = os.curdir
+params['projPath'] = os.path.join(params['basePath'],'projects',project)
+params['paramFile'] = os.path.join(params['projPath'], parameterFile)
+params['hexFile'] = os.path.join(params['basePath'],'hexFiles','wheel_interrupter_bit_noStimDetect.ino.hex')
+params['dataPath'] = os.path.join(params['basePath'], 'mice', mouse)
+now = datetime.now()
+params['sessID'] = now.strftime("%Y%m%d_%H%M")
+
+#%% open a file to write to
+params['fn'] = mouse + '_' + params['sessID'] + '_' + params['taskType'] + '.txt'
+fn_path = os.path.join(params['dataPath'],params['fn'])
+
+fid = open(fn_path, 'w')
