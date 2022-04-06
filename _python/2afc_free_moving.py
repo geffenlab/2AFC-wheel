@@ -42,3 +42,4 @@ params['fn'] = mouse + '_' + params['sessID'] + '_' + params['taskType'] + '.txt
 fn_path = os.path.join(params['dataPath'],params['fn'])
 
 fid = open(fn_path, 'w')
+
