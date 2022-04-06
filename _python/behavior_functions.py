@@ -13,7 +13,7 @@ def loadArduinoSketch(comport,sketchPath):
     
     
     
-    cmdIn = '%s%s%s%s:i"' % ('""C:\\Program Files\\WindowsApps\\ArduinoLLC.ArduinoIDE_1.8.57.0_x86__mdqgnx93n4wtt\\hardware\\tools\\avr/bin/avrdude.exe" -C"C:\\Program Files\\WindowsApps\\ArduinoLLC.ArduinoIDE_1.8.57.0_x86__mdqgnx93n4wtt\\hardware\\tools\\avr/etc/avrdude.conf" -v -patmega328p -carduino -P',comport,' -b115200 -D -Uflash:w:',sketchPath)
+    cmdIn = '%s%s%s%s:i"' % ('cmd /C ""C:\\Program Files\\WindowsApps\\ArduinoLLC.ArduinoIDE_1.8.57.0_x86__mdqgnx93n4wtt\\hardware\\tools\\avr/bin/avrdude.exe" -C"C:\\Program Files\\WindowsApps\\ArduinoLLC.ArduinoIDE_1.8.57.0_x86__mdqgnx93n4wtt\\hardware\\tools\\avr/etc/avrdude.conf" -v -patmega328p -carduino -P',comport,' -b115200 -D -Uflash:w:',sketchPath)
 
     avrdude = "C:\\Program Files\\WindowsApps\\ArduinoLLC.ArduinoIDE_1.8.57.0_x86__mdqgnx93n4wtt\\hardware\\tools\\avr/bin/avrdude"
     avrdude_conf = "-CC:\\Program Files\\WindowsApps\\ArduinoLLC.ArduinoIDE_1.8.57.0_x86__mdqgnx93n4wtt\\hardware\\tools\\avr/etc/avrdude.conf"

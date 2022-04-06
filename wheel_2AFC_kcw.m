@@ -172,7 +172,7 @@ while cnt < 2000
         % send trial info to arduino and check that it was received
         fprintf(p,'%i %i %i',[rewardType, giveTO, audio_dur]);
 
-    elseif contains(out,'WHEELSTILL')
+    elseif contains(out,'ENDHOLDTIME')
         % present the audio
         %         startOutput(s,params.device);
         PsychPortAudio('Start',s,1);
