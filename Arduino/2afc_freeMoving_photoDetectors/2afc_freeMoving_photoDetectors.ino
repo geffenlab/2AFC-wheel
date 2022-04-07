@@ -6,12 +6,12 @@ byte const no_output = 0;             // no output
 byte const solenoidOut_0 = 1;         // left solenoid
 byte const solenoidOut_1 = 2;         // center solenoid
 byte const solenoidOut_2 = 4;         // right solenoid
-int const AudioEventsInput = 19;      // events from nidaq/soundcard alone: channel 4
-int const photoInput_0 = 35;          // left nosepoke: channel 5
-int const photoInput_1 = 67;          // centre nosepoke: channel 6
-int const photoInput_2 = 131;         // right nosepoke: channel 7
-int const audio_photo_1 = 83;         // center nosepoke and audio: channel 4 & 6
-int const no_input = 3;               // no input from any channel
+int const AudioEventsInput = 241;      // events from nidaq/soundcard alone: channel 4
+int const photoInput_0 = 195;          // left nosepoke: channel 5
+int const photoInput_1 = 163;          // centre nosepoke: channel 6
+int const photoInput_2 = 97;         // right nosepoke: channel 7
+int const audio_photo_1 = 179;         // center nosepoke and audio: channel 4 & 6
+int const no_input = 225;               // no input from any channel
 // setup port reading
 byte inputRegD;
 
