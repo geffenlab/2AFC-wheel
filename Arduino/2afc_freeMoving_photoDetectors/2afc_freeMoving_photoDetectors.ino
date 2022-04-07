@@ -52,6 +52,9 @@ void setup() {
   DDRD = B00000000;     // Note that 0 and 1 are TX and RX for serial comms.
   DDRB = B00000111;     //channels 8, 9 & 10 as outputs
 
+  PORTB = no_output;
+  PORTD = no_input;
+
   // retrieve parameters from matlab
   int done = 0;
   float val[4];
@@ -146,7 +149,7 @@ void loop() {
 
     //********************************************************************//
     case 2: {// MONITOR CENTRAL NOSEPOKE UNTIL NOT BROKEN FOR HOLDTIME DURATION
-
+        Serial.println("state2");
         if  (mouse_center()) {  // wait for mouse to do center nose-poke
           signed long stateTimer = 0;     // start timer at zero
           signed long t = millis();       // Mark time at which timer started

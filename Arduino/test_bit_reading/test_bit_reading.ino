@@ -22,18 +22,18 @@ void setup() {
   Serial.println("serial_established");
 
   // Set pins 0..7 as INPUTS using the register
-  DDRD = 0b1111110;    // Note that 0 and 1 are TX and RX for serial comms. 0 is input, 1 is output
+  DDRD = 0b0000000;    // Note that 0 and 1 are TX and RX for serial comms. 0 is input, 1 is output
   DDRB = B00000111; //channels 8, 9 & 10 as outputs
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  PORTD = setpin;
-  startTime = micros(); // Get the current time in microseconds
+  //PORTD = setpin;
+  //startTime = micros(); // Get the current time in microseconds
   inputRegD = PIND;
-  timeInterval = micros() - startTime;  // Calculate time it took to read 8 inputs
+  //timeInterval = micros() - startTime;  // Calculate time it took to read 8 inputs
   Serial.println(inputRegD);
-  Serial.println(inputRegD==64);
-  delay(1000);  // Wait a second
+  //Serial.println(inputRegD==64);
+  //delay(1000);  // Wait a second
 
 }
