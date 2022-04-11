@@ -268,7 +268,7 @@ while cnt < 2000
         end
         %         end
 
-    elseif contains(out,'NOAUDIOEVENT')
+    elseif any(contains(out,{'NOAUDIOONEVENT','NOAUDIOOFFEVENT'}))
 
         status = PsychPortAudio('GetStatus', s);
         while status.Active==1
@@ -340,7 +340,7 @@ end
 if strcmp(params.device,'NIDAQ')
     stop(s);
 end
-print_beh_session_stats(fn)
+% print_beh_session_stats(fn)
 clear all %#ok<CLALL>
 disp('Done');
 
