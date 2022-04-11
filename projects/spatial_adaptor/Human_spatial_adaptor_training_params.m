@@ -10,7 +10,7 @@ stimInfo.adaptor_dur        = 0.5;              % adaptor duration in s
 stimInfo.adaptor_pip_dur    = 0.005;           % duration of individual adaptor pips
 stimInfo.adaptor_level      = 60;               % mean level dB
 stimInfo.adaptor_bandwidth  = [5 60];        % adaptor bandwidth in kHz
-stimInfo.target_dur         = 0.4;              % target duration in s
+stimInfo.target_dur         = 0.5;              % target duration in s
 stimInfo.target_level       = 60;               % mean level dB
 stimInfo.target_ILDs        = [-30,30];        % ILD of target
 stimInfo.target_bandwidth   = [5 10];        % target bandwidth in kHz
@@ -30,7 +30,7 @@ params.taskType = 'training';
 
 % booth specific parameters
 params.boothID = 'booth1';
-params.com = 'COM4';
+params.com = 'COM7';
 params.rewardDuration = 205;
 params.rotaryDebounce = 10;
 params.holdTimeMin = 1000;

@@ -4,7 +4,7 @@ function [s] = setupSerial(comPort)
 
 
 s=serial(comPort);
-set(s,'BaudRate', 19200);
+set(s,'BaudRate', 115200);
 % set(s,'BaudRate', 9600);
 % set(s,'DataBits', 8);
 % set(s,'StopBits', 1);

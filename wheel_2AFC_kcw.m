@@ -11,7 +11,7 @@ cd(baseDir);
 params.basePath = pwd;
 params.projPath = [params.basePath filesep 'projects' filesep project];
 params.paramFile = [params.projPath filesep parameterFile];
-params.hexFile = [params.basePath filesep 'hexFiles' filesep 'wheel_interrupter_bit_noStimDetect.ino.hex'];
+params.hexFile = [params.basePath filesep 'hexFiles' filesep '2afc_freeMoving_photoDetectors.ino.hex'];
 params.dataPath = [params.basePath filesep 'mice' filesep mouse];
 git = strfind(params.basePath,'GitHub');
 params.githubPath = params.basePath(1:git+5);
@@ -44,8 +44,8 @@ p = setupSerial(params.com);
 out = serialRead(p);
 
 % send variables to the arduino
-fprintf(p,'%f %d %f %f %f ',[params.rewardDuration params.timeoutDuration ...
-    params.rotaryDebounce params.holdTimeMin params.holdTimeMax]);
+fprintf(p,'%f %d %f %f',[params.rewardDuration params.timeoutDuration ...
+     params.holdTimeMin params.holdTimeMax]);
 WaitSecs(.5);
 disp('parameters sent');
 

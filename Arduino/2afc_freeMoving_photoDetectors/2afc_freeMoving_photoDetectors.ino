@@ -23,6 +23,8 @@ float holdTimeMax;       // how long mouse must wait before trial starts max
 float rewardTime;        // ms
 float holdTime;
 unsigned long t;
+unsigned long t_sound_end;
+unsigned long t_audio_onset;
 unsigned long time;
 unsigned long stateTimer = 0;        // previous state for the bstate 1 timer
 
@@ -156,14 +158,14 @@ void loop() {
         // Serial.println(mouse_center() == "center");
         //  Serial.println(PIND);
         if  (mouse_center() == "center") {  // wait for mouse to do center nose-poke
-          //  Serial.println(mouse_center());
+          Serial.println("center nosepoke");
           signed long stateTimer = 0;     // start timer at zero
           signed long t = millis();       // Mark time at which timer started
           bool contact = true;            // Mouse in contact with center nosepoke
-          Serial.println(t - stateTimer);
+          //Serial.println(t - stateTimer);
           // run the timer until the mouse has been at the center for the hold time
           while ((stateTimer - t) < holdTime) {
-            Serial.println(stateTimer - t);
+            //Serial.println(stateTimer - t);
             stateTimer = millis();        // update the timer
             //    inputRegD = PIND;             // read the input pins
 
@@ -181,6 +183,7 @@ void loop() {
             Serial.print("ENDHOLDTIME ");
             Serial.println(t);
             state = 3;
+            bool onset = false;
           }
 
           // Serial.println("STATE2");
@@ -191,32 +194,34 @@ void loop() {
     //********************************************************************//
     case 3: { // MONITOR FOR SOUND ONSET AND OFFSET AND EARLY DEPARTURE
 
-        // Serial.println("STATE3");
-        bool onset = false;
+        Serial.println("STATE3");
         signed long stateTimer = 0;
         signed long t = millis();
-        Serial.println(t);
-        Serial.println(audioDur);
-        Serial.println((stateTimer - t));
+        bool onset;
+        //Serial.println(t);
+        //Serial.println(audioDur);
+        //Serial.println((stateTimer - t));
+        //Serial.println(mouse_center());
         // while sound has not completed
-        while ((stateTimer - t) < audioDur) {
+        while (((stateTimer - t) < audioDur) & (!onset)) {
           stateTimer = millis();
-          Serial.println(stateTimer - t);
+          // Serial.println(stateTimer - t);
 
           // mouse is at center and sound comes on
-          if (mouse_center() == "center" & !onset) {
+          if (mouse_center() == "center_audio" & !onset) {
             t = micros();
             Serial.print(trialStr);
             Serial.print("STIMON ");
             Serial.println(t);
             onset = true;
+            t_audio_onset = t/1000;
             break;
 
             // mouse is not center and sound is presenting
           } else if (mouse_center() == "audio") {
             t = micros();
             Serial.print(trialStr);
-            Serial.print("EARLYDEP ");
+            Serial.print("EARLYDEP_01 ");
             Serial.println(t);
             state = 2;
             break;
@@ -225,7 +230,7 @@ void loop() {
           } else if (mouse_center() == "none") {
             t = micros();
             Serial.print(trialStr);
-            Serial.print("EARLYDEP ");
+            Serial.print("EARLYDEP_02 ");
             Serial.println(t);
             state = 2;
             break;
@@ -239,13 +244,32 @@ void loop() {
           Serial.print("NOAUDIOEVENT ");
           Serial.println(t);
           state = 8;
+        }
 
-          // audio has finished
-        } else if (state == 3 & onset) {
-          t = micros();
+        stateTimer = 0;
+        bool soundEnd = false;
+        while ((stateTimer - t_audio_onset) < audioDur) {
+          stateTimer = millis();
+          Serial.println(t_audio_onset);
+          Serial.println(stateTimer);
+          soundEnd = true;
+          if (mouse_center() == "audio") {
+            t = micros();
+            Serial.print(trialStr);
+            Serial.print("EARLYDEP_03 ");
+            Serial.println(t);
+            soundEnd = false;
+            state = 2;
+            break;
+          }
+          t_sound_end = micros();
+        }
+        
+        // audio has finished
+         if (onset & soundEnd) {
           Serial.print(trialStr);
           Serial.print("STIMOFF ");
-          Serial.println(t);
+          Serial.println(t_sound_end);
           state = 4;
         }
 
@@ -255,19 +279,23 @@ void loop() {
     //********************************************************************//
     case 4: { // MONITOR FOR RESPONSE
 
+      Serial.println("case 4");
+     // Serial.println(mouse_center());
+
         int resp = false;
-        while (!resp) {
-          inputRegD = PIND; // read the inputs
-          if (inputRegD == photoInput_0) {
+        
+         
+         // Serial.println(mouse_center());
+          if (mouse_center() == "left") {
             t = micros();
             respDir = 1;            // mouse responded left
             resp = true;
-          } else if (inputRegD == photoInput_2) {
+          } else if (mouse_center() == "right") {
             t = micros();
             respDir = 2;            // mouse responded right
             resp = true;
           }
-        }
+        
 
         Serial.print(trialStr);
         Serial.print("RESPTIME ");
@@ -382,8 +410,10 @@ void loop() {
 }
 
 String mouse_center() { //
-  if (PIND == photoInput_1 | PIND == audio_photo_1 | PIND == photoInput_1 - 2 | PIND == audio_photo_1 - 2) {
+  if (PIND == photoInput_1 | PIND == photoInput_1 - 2) {
     output = "center";
+  } else if (PIND == audio_photo_1 | PIND == audio_photo_1 - 2){
+    output = "center_audio";
   } else if (PIND == photoInput_0 | PIND == photoInput_0 - 2) {
     output = "left";
   } else if (PIND == photoInput_2 | PIND == photoInput_2 - 2) {
