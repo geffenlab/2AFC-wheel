@@ -44,10 +44,10 @@ int giveTO = 1;
 int r;
 int audioDur;
 String output;
-String o;
 String input;
 bool onset;
 bool contact;
+
 
 
 void setup() {
@@ -100,7 +100,10 @@ void setup() {
   //  pinMode(photoInput_0, INPUT);
   //  pinMode(photoInput_1, INPUT);
   //  pinMode(photoInput_2, INPUT);
-
+  long const seed = millis();
+  randomSeed(seed);
+  Serial.print("SEED ");
+  Serial.println(seed);
   sprintf(trialStr, "%04d ", trialCnt);
   Serial.print(trialStr);
   Serial.print(micros());
@@ -152,7 +155,7 @@ void loop() {
             }
           }
         }
-        
+
         break;
       }
 
@@ -160,7 +163,7 @@ void loop() {
     case 2: {// MONITOR CENTRAL NOSEPOKE UNTIL NOT BROKEN FOR HOLDTIME DURATION
 
         if  (check_inputs() == "center") {  // wait for mouse to do center nose-poke
-          Serial.println("center nosepoke");
+          // Serial.println("center nosepoke");
           signed long stateTimer = 0;     // start timer at zero
           signed long t = millis();       // Mark time at which timer started
           contact = true;            // Mouse in contact with center nosepoke
@@ -186,27 +189,35 @@ void loop() {
             Serial.println(t);
             state = 3;
             onset = false; // set sound onset detection parameter to false
+            long r = random(100);
+            if (r < 5) { // reward center 5% of the time
+              PORTB = solenoidOut_1;
+              delay(rewardTime);
+              PORTB = no_output;
+            }
           }
         }
-        
+
         break;
       }
 
     //********************************************************************//
     case 3: { // MONITOR FOR SOUND ONSET AND OFFSET AND EARLY DEPARTURE
-        stateTimer = micros(); 
+        stateTimer = micros();
         timer = stateTimer - endHoldTime;
-       // Serial.println(timer);
-       // Serial.println(check_inputs());
+        // Serial.println(timer);
+        // Serial.println(check_inputs());
         input = check_inputs();
-        Serial.println(input);
+        //  Serial.println(input);
+
         if  (input == "center_audio" & !onset) {  // mouse is at center and sound is on
           t = micros();
           signed long stateTimer = 0;
           Serial.print(trialStr);
           Serial.print("STIMON ");
           Serial.println(t);
-          onset = true;                                                                                          
+          onset = true;
+
         } else if (input == "none" & !onset) { // mouse has left before sound onset
           t = micros();
           Serial.print(trialStr);
@@ -214,12 +225,15 @@ void loop() {
           Serial.println(t);
           state = 2;
           break;
-        } else if (!onset & (timer > audioDur*1000.0)){ // no sound onset detected
+
+        } else if (!onset & (timer > audioDur * 1000.0)) { // no sound onset detected
           t = micros();
           Serial.print(trialStr);
           Serial.print("NOAUDIOONEVENT ");
           Serial.println(t);
           state = 8;
+          break;
+
         } else if (input == "center" & onset) { // mouse is center and sound has finished presenting
           t = micros();
           Serial.print(trialStr);
@@ -227,6 +241,7 @@ void loop() {
           Serial.println(t);
           state = 4;
           break;
+
         } else if (input == "audio" & onset) { // mouse is not center and sound is presenting
           t = micros();
           Serial.print(trialStr);
@@ -234,123 +249,42 @@ void loop() {
           Serial.println(t);
           state = 2;
           break;
+
         } else if (input == "none" & onset) { // mouse has waited but no sound offset detected
           t = micros();
           Serial.print(trialStr);
           Serial.print("EARLYDEP_03 ");
           Serial.println(t);
           state = 2;
+          break;
         }
-
-        
-          
-
-
-
-
-        //      signed long stateTimer = 0;
-        //      // wait for sound onset
-        //      while (((stateTimer - (t / 1000)) < audioDur) & (!onset)) {
-        //        stateTimer = millis();
-        // Serial.println(stateTimer - t);
-
-        // mouse is at center and sound comes on
-        //            if (check_inputs() == "center_audio" & !onset) {
-        //              t = micros();
-        //              Serial.print(trialStr);
-        //              Serial.print("STIMON ");
-        //              Serial.println(t);
-        //              onset = true;
-        //              t_audio_onset = t / 1000;
-        //              break;
-
-        // mouse is not center and sound is presenting
-        //      } else if (check_inputs() == "audio") {
-        //        t = micros();
-        //        Serial.print(trialStr);
-        //        Serial.print("EARLYDEP_01 ");
-        //        Serial.println(t);
-        //        state = 2;
-        //        break;
-
-        //        // there is no sound input and the mouse is not center
-        //      } else if (check_inputs() == "none") {
-        //        t = micros();
-        //        Serial.print(trialStr);
-        //        Serial.print("EARLYDEP_02 ");
-        //        Serial.println(t);
-        //        state = 2;
-        //        break;
-        //      }
-        //  }
-
-        //  // mouse has waited but no sound onset detected
-        //  if (!onset & state == 3) {
-        //    t = micros();
-        //    Serial.print(trialStr);
-        //    Serial.print("NOAUDIOEVENT ");
-        //    Serial.println(t);
-        //    state = 8;
-        //  }
-
-        //        stateTimer = 0;
-        //        bool soundEnd = false;
-        //        while ((stateTimer - t_audio_onset) < audioDur) {
-        //          stateTimer = millis();
-        //          Serial.println(t_audio_onset);
-        //          Serial.println(stateTimer);
-        //          soundEnd = true;
-        //          if (check_inputs() == "audio") {
-        //            t = micros();
-        //            Serial.print(trialStr);
-        //            Serial.print("EARLYDEP_03 ");
-        //            Serial.println(t);
-        //            soundEnd = false;
-        //            state = 2;
-        //            break;
-        //          }
-        //          t_sound_end = micros();
-        //        }
-        //
-        //        // audio has finished
-        //        if (onset & soundEnd) {
-        //          Serial.print(trialStr);
-        //          Serial.print("STIMOFF ");
-        //          Serial.println(t_sound_end);
-        //          state = 4;
-        //        }
-
         break;
       }
 
     //********************************************************************//
     case 4: { // MONITOR FOR RESPONSE
 
-        //Serial.println("case 4");
-       // Serial.println(check_inputs());
-
         bool resp = false;
         input = check_inputs();
-       // Serial.println(input);
-        // Serial.println(check_inputs());
-        if (input == "left") {
+
+        if (input == "left") { // mouse responded left
           t = micros();
-          respDir = 1;            // mouse responded left
+          respDir = 1;
           resp = true;
-        } else if (input == "right") {
+        } else if (input == "right") { // mouse responded right
           t = micros();
-          respDir = 2;            // mouse responded right
+          respDir = 2;
           resp = true;
         }
 
         if (resp) {
-        Serial.print(trialStr);
-        Serial.print("RESPTIME ");
-        Serial.println(t);
-        Serial.print(trialStr);
-        Serial.print("RESPDIR ");
-        Serial.println(respDir);
-        state = 5;
+          Serial.print(trialStr);
+          Serial.print("RESPTIME ");
+          Serial.println(t);
+          Serial.print(trialStr);
+          Serial.print("RESPDIR ");
+          Serial.println(respDir);
+          state = 5;
         }
         break;
       }
@@ -393,7 +327,6 @@ void loop() {
     //********************************************************************//
     case 6: { // TIMEOUT
 
-        //     Serial.println("timeout");
         long timer = 0;
         t = micros();
         Serial.print(trialStr);
@@ -457,7 +390,7 @@ void loop() {
   }
 }
 
-String check_inputs() { //
+String check_inputs() { // checks PORTD status
   if (PIND == photoInput_1 | PIND == photoInput_1 - 2) {
     output = "center";
   } else if (PIND == audio_photo_1 | PIND == audio_photo_1 - 2) {
@@ -471,9 +404,28 @@ String check_inputs() { //
   } else {
     output = "none";
   }
-  //o = output;
- // Serial.print(PIND);
-  //Serial.println(o);
-  
   return output;
+}
+
+void solenoid_out(char solenoid_output) {
+  switch (solenoid_output) {
+    case 'L': {
+        PORTB = solenoidOut_0;
+        delay(rewardTime);
+        PORTB = no_output;
+        break;
+      }
+    case 'R': {
+        PORTB = solenoidOut_2;
+        delay(rewardTime);
+        PORTB = no_output;
+        break;
+      }
+    case 'C': {
+        PORTB = solenoidOut_1;
+        delay(rewardTime);
+        PORTB = no_output;
+        break;
+      }
+  }
 }
