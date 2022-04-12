@@ -191,9 +191,7 @@ void loop() {
             onset = false; // set sound onset detection parameter to false
             long r = random(100);
             if (r < 5) { // reward center 5% of the time
-              PORTB = solenoidOut_1;
-              delay(rewardTime);
-              PORTB = no_output;
+              solenoid_out('C');
             }
           }
         }
@@ -348,13 +346,9 @@ void loop() {
 
         t = micros();
         if (respDir == 1) {     // left response
-          PORTB = solenoidOut_0;
-          delay(rewardTime);
-          PORTB = no_output;
+          solenoid_out('L');
         } else if (respDir == 2) { // right response
-          PORTB = solenoidOut_2;
-          delay(rewardTime);
-          PORTB = no_output;
+          solenoid_out('R');
         }
 
         Serial.print(trialStr);

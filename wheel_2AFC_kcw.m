@@ -340,9 +340,10 @@ end
 if strcmp(params.device,'NIDAQ')
     stop(s);
 end
-% print_beh_session_stats(fn)
+print_beh_session_stats(fn)
 clear all %#ok<CLALL>
 disp('Done');
+fclose('all');
 
 
 function flag = check_keyboard
