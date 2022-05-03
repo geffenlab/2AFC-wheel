@@ -30,7 +30,7 @@ params.taskType = 'training';
 
 % booth specific parameters
 params.boothID = 'booth1';
-params.com = 'COM7';
+params.com = 'COM5';
 params.rewardDuration = 205;
 params.rotaryDebounce = 10;
 params.holdTimeMin = 1000;

@@ -1,11 +1,11 @@
-const int pin = 9;
+const int pin = 10;
 int state = 48;
 
 void setup() {
   // put your setup code here, to run once:
   pinMode(pin,OUTPUT);
 
-  Serial.begin(9600);
+  Serial.begin(115200);
 
 }
 // open the serial thing (top right). type any letter and press enter to 
@@ -19,12 +19,12 @@ void loop() {
   }
   if (state == 48) {
     digitalWrite(pin,LOW);
-    Serial.print(state);
+    Serial.println(state);
     Serial.println(" valve CLOSED");
   }
   else {
     digitalWrite(pin,HIGH);
-    Serial.print(state);
+    Serial.println(state);
     Serial.println(" valve OPEN");
   }
 
