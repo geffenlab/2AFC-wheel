@@ -157,15 +157,19 @@ project = contents{get(handles.listbox1,'Value')};
 contents = cellstr(get(handles.listbox2,'String'));
 mouse = contents{get(handles.listbox2,'Value')};
 
-switch project
-    case 'wheel_toneClouds'
-        %wheel_behaviour_TESTINGgui(mouse,project,parameterFile);
-        wheel_2AFC(mouse,baseDir,project,parameterFile);
-    case 'speech_in_noise'
-        wheel_2AFC(mouse,baseDir,project,parameterFile);
-    case 'habituation'
-        wheel_2AFC_habituation(mouse,baseDir,project,parameterFile);
-    otherwise
-         wheel_2AFC_kcw(mouse,baseDir,project,parameterFile);
-        
-end
+run(sprintf('%s\\projects\\%s\\%s',baseDir,project,parameterFile));
+feval(params.beh_func,mouse,baseDir,project,parameterFile);
+
+
+% switch project
+%     case 'wheel_toneClouds'
+%         %wheel_behaviour_TESTINGgui(mouse,project,parameterFile);
+%         wheel_2AFC(mouse,baseDir,project,parameterFile);
+%     case 'speech_in_noise'
+%         wheel_2AFC(mouse,baseDir,project,parameterFile);
+%     case 'habituation'
+%         wheel_2AFC_habituation(mouse,baseDir,project,parameterFile);
+%     otherwise
+%          wheel_2AFC_kcw(mouse,baseDir,project,parameterFile);
+%         
+% end
