@@ -33,6 +33,8 @@ String output;
 String input;
 int state;
 int prev_resp = 99;
+char trialStr[6];
+int trialCnt = 0;
 
 
 
@@ -99,6 +101,9 @@ void loop() {
         if  (check_inputs() == "center") {  // wait for mouse to do center nose-poke
           t = micros();
           solenoid_out('C');
+          trialCnt++;
+          sprintf(trialStr, "%04d ", trialCnt);
+          Serial.print(trialStr);
           Serial.print("CENTER ");
           Serial.println(t);
           state = 2; // GO TO STATE 2

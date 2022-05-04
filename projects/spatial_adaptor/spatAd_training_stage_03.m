@@ -2,7 +2,7 @@
 stimInfo.seed           = now;
 rng(stimInfo.seed)
 
-% stimInfo parameters
+%% stimInfo parameters
 stimInfo.fs                 = 192e3;            % sample rates
 stimInfo.adaptor_ILDs       = 0;              % ILD of the adaptor in dB
 stimInfo.adaptor_SDs        = 10;               % standard deviation of adaptor
@@ -17,24 +17,29 @@ stimInfo.target_bandwidth   = [10 40];        % target bandwidth in kHz
 stimInfo.envDur             = 0.005;            % duration of envelope in s
 stimInfo.stimFunction       = 'spatialAdaptorGen'; % stimulus function
 
+%% TASK PARAMETERS
 % task specific stuff
 params.stimFunc = 'spatialAdaptorGen(stimInfo,params);';
-params.taskType = 'training';
-
-% booth specific parameters
-params.beh_func = 'freeMoving_2AFC_kcw';
-params.boothID = 'booth1';
+params.taskType = 'training_03';
+params.beh_func = 'freeMoving_2AFC_stage_03';
+params.hexFile = 'freeMoving_2AFC_stage_03.ino.hex';
 params.com = 'COM7';
-params.rewardDuration_L = 250;
-params.rewardDuration_R = 250;
-params.rewardDuration_C = 250;
-params.rotaryDebounce = 10;
-params.holdTimeMin = 1000;
-params.holdTimeMax = 1500;
-params.timeoutDuration    = 2000;
 params.device = 'Lynx E44';
 params.channel = [1 2 3 4];
 params.fs = 192e3;
+
+% specific task parameters
+params.rewardDuration_L = 250;
+params.rewardDuration_R = 250;
+params.rewardDuration_C = 250;
+params.holdTimeMin = 1;
+params.holdTimeMax = 250;
+params.timeoutDuration    = 0;
+params.trialTypeRatios    = [50 50];
+params.rewardContingency  = [1 2];
+params.timeOutContingency = [1 1];
+
+% filter parameters
 params.filtFile_left = '220210_2afc_LEFTspk_LynxE44_5k-60k_fs192k_FLATNOISE';
 params.filtFile_right = '220210_2afc_RIGHTspk_LynxE44_5k-60k_fs192k_FLATNOISE';
 params.ampF = 10/11;
@@ -42,25 +47,16 @@ params.leftspk_adaptor_offset = -1.1;
 params.rightspk_adaptor_offset = -1;
 params.leftspk_target_offset = 2;
 params.rightspk_target_offset = 2;
+params.filtdir = [params.githubPath '\filters'];
+if ~exist(params.filtdir,'dir')
+    error('Filter directory not found, pull from GitHub.');
+end
+load([params.filtdir filesep params.filtFile_left]);
+params.filt_left = FILT;
+load([params.filtdir filesep params.filtFile_right]);
+params.filt_right = FILT;
+stimInfo.FILT_left = params.filt_left;
+stimInfo.FILT_right = params.filt_right;
 
-% filter
-% params.filtdir = [params.githubPath '\filters'];
-% if ~exist(params.filtdir,'dir')
-%     error('Filter directory not found, pull from GitHub.');
-% end
-% load([params.filtdir filesep params.filtFile_left]);
-% params.filt_left = FILT;
-% load([params.filtdir filesep params.filtFile_right]);
-% params.filt_right = FILT;
-
-% task parameters
-params.trialTypeRatios    = [50 50];
-params.rewardContingency  = [1 2];
-params.timeOutContingency = [1 1];
-
-% fix some other things
-% stimInfo.FILT_left = params.filt_left;
-% stimInfo.FILT_right = params.filt_right;
-% stimInfo.respDuration = params.respDuration;
 
 % save('C:\Users\Maria\Documents\MATLAB\Calibration\20211206_2afcwheel_calibration\SA_params.mat','stimInfo');

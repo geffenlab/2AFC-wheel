@@ -31,7 +31,8 @@ signed long right_triggered = millis();
 // other stuff:
 String output;
 String input;
-
+char trialStr[6];
+int trialCnt = 0;
 
 
 void setup() {
@@ -80,7 +81,6 @@ void setup() {
   randomSeed(seed);
   Serial.print("SEED ");
   Serial.println(seed);
-
   // clear out the serial
   Serial.read();
   Serial.read();
@@ -94,6 +94,9 @@ void loop() {
     t = micros();
     center_triggered = millis();       // Mark time at which timer started
     solenoid_out('C');
+    trialCnt++;
+    sprintf(trialStr, "%04d ", trialCnt);
+    Serial.print(trialStr);
     Serial.print("CENTER ");
     Serial.println(t);
 
@@ -101,6 +104,9 @@ void loop() {
     t = micros();
     left_triggered = millis();       // Mark time at which timer started
     solenoid_out('L');
+    trialCnt++;
+    sprintf(trialStr, "%04d ", trialCnt);
+    Serial.print(trialStr);
     Serial.print("LEFT ");
     Serial.println(t);
 
@@ -108,6 +114,9 @@ void loop() {
     t = micros();
     right_triggered = millis();       // Mark time at which timer started
     solenoid_out('R');
+    trialCnt++;
+    sprintf(trialStr, "%04d ", trialCnt);
+    Serial.print(trialStr);
     Serial.print("RIGHT ");
     Serial.println(t);
   }
