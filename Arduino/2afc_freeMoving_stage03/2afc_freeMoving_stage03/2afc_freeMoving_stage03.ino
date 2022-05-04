@@ -67,13 +67,13 @@ void setup() {
 
   // retrieve parameters from matlab
   int done = 0;
-  float val[4];
+  float val[6];
   int cnt = 0;
   while (!done) {
     while (Serial.available() > 0) {
       val[cnt] = Serial.parseFloat();
       cnt++;
-      if (cnt > 3) {
+      if (cnt > 5) {
         done = 1;
         rewardTime_L      = val[0];
         rewardTime_R      = val[1];
@@ -100,14 +100,6 @@ void setup() {
     }
   }
 
-  //  // assign pin modes
-  //  pinMode(solenoidOut_0, OUTPUT);
-  //  pinMode(solenoidOut_1, OUTPUT);
-  //  pinMode(solenoidOut_2, OUTPUT);
-  //  pinMode(AudioEventsInput, INPUT);
-  //  pinMode(photoInput_0, INPUT);
-  //  pinMode(photoInput_1, INPUT);
-  //  pinMode(photoInput_2, INPUT);
   long const seed = millis();
   randomSeed(seed);
   Serial.print("SEED ");
@@ -302,25 +294,11 @@ void loop() {
         if (trialType == respDir) {
           trialOutcome = 1;
           state = 7;
-
-          // RANDOM REWARD TRIAL
-        } else if (trialType == 99) {
-          trialOutcome = 99;
-          r = random(0, 1); // if this is (0,1) then there will be no rewards, if it is (0,2) there will be random rewards
-          if (r > 0.5) {
-            state = 7;
-          } else {
-            state = 8;
-          }
-
+          
           // INCORRECT TRIAL
         } else {
           trialOutcome = 0;
-          if (giveTO == 1) {
-            state = 6;
-          } else if (giveTO == 0) {
-            state = 8;
-          }
+          state = 4;
         }
 
         Serial.print(trialStr);
@@ -392,6 +370,8 @@ void loop() {
   }
 }
 
+
+//********************************************************************************//
 String check_inputs() { // checks PORTD status
   if (PIND == photoInput_1 | PIND == photoInput_1 - 2) {
     output = "center";
