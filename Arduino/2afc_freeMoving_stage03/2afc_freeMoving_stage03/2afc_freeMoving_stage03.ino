@@ -293,17 +293,18 @@ void loop() {
         // CORRECT TRIAL
         if (trialType == respDir) {
           trialOutcome = 1;
+          Serial.print(trialStr);
+          Serial.print("TRIALOUTCOME ");
+          Serial.println(trialOutcome);
           state = 7;
-          
+
           // INCORRECT TRIAL
         } else {
           trialOutcome = 0;
           state = 4;
         }
 
-        Serial.print(trialStr);
-        Serial.print("TRIALOUTCOME ");
-        Serial.println(trialOutcome);
+
 
         break;
       }

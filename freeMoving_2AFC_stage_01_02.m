@@ -7,15 +7,17 @@ commandwindow
 
 %% SETUP
 
-% load parameters
-run(params.paramFile);
-
 % paths
 cd(baseDir);
 params.basePath = pwd;
 params.projPath = [params.basePath filesep 'projects' filesep project];
 params.paramFile = [params.projPath filesep parameterFile];
-params.hexPath = [params.basePath filesep 'hexFiles' filesep params.hexFile]; %%%%%% CHANGE THIS
+
+% load parameters
+run(params.paramFile);
+
+% more paths
+params.hexPath = [params.basePath filesep 'hexFiles' filesep params.hexFile];
 params.dataPath = [params.basePath filesep 'mice' filesep mouse];
 git = strfind(params.basePath,'GitHub');
 params.githubPath = params.basePath(1:git+5);

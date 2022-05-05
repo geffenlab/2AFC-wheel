@@ -45,18 +45,7 @@ params.leftspk_adaptor_offset = -1.1;
 params.rightspk_adaptor_offset = -1;
 params.leftspk_target_offset = 2;
 params.rightspk_target_offset = 2;
-% params.filtdir = [params.githubPath '\filters'];
-if ~exist(params.filtdir,'dir')
-    error('Filter directory not found, pull from GitHub.');
-end
-load([params.filtdir filesep params.filtFile_left]);
-params.filt_left = FILT;
-load([params.filtdir filesep params.filtFile_right]);
-params.filt_right = FILT;
 
-% stimulus parameters
-stimInfo.FILT_left = params.filt_left;
-stimInfo.FILT_right = params.filt_right;
 
 
 % save('C:\Users\Maria\Documents\MATLAB\Calibration\20211206_2afcwheel_calibration\SA_params.mat','stimInfo');

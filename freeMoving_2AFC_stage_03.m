@@ -7,19 +7,24 @@ commandwindow
 
 %% SETUP
 
-% load parameters
-run(params.paramFile);
-
 % paths
 cd(baseDir);
 params.basePath = pwd;
 params.projPath = [params.basePath filesep 'projects' filesep project];
 params.paramFile = [params.projPath filesep parameterFile];
+
+% load parameters
+run(params.paramFile);
+
+% more paths
 params.hexPath = [params.basePath filesep 'hexFiles' filesep params.hexFile];
 params.dataPath = [params.basePath filesep 'mice' filesep mouse];
 git = strfind(params.basePath,'GitHub');
 params.githubPath = params.basePath(1:git+5);
 params.sessID = datestr(now,'yyyymmdd_HHMM');
+
+% load filters
+[params, stimInfo] = loadFilters(params, stimInfo); %#ok<NODEF>
 
 % open a file to write to
 params.fn = [mouse '_' params.sessID '_' params.taskType];
@@ -158,11 +163,13 @@ while cnt < 2000
         respTime = str2double(out(d));
 
     elseif contains(out,'TRIALOUTCOME')
+         PsychPortAudio('Stop',s,2); % the 2 means stop asap (http://psychtoolbox.org/docs/PsychPortAudio-Stop)
+        
         % extract outcome
         d = regexp(out,'\d');
         d = d(5:end);
         responseOutcome = str2double(out(d));
-
+        
         outcome_track(trialNumber) = responseOutcome;
         respTime_track(trialNumber) = (respTime-stimOff)/1000000;
         updateGraph(trialNumber,correctionTrial,outcome_track,respTime_track(trialNumber),15)
@@ -252,57 +259,10 @@ while cnt < 2000
         blank_hex = [params.basePath filesep 'hexFiles' filesep 'blank.ino.hex'];
         [~, cmdOut] = loadArduinoSketch(params.com,blank_hex);
         disp(cmdOut)
-        %         disp(['Total trials: ' num2str(trialNumber)])
-        %         fprintf('Percent correct: %02.2f\n',mean(resp(resp~=99)));
         delete(instrfindall)
         fclose(fid);
         cnt = 9999;
-        
-
-
-        %         % plot here
-        %         smoothing = 30;
-        %         resp(trialNumber) = str2double(responseOutcome);
-        %         respTime(trialNumber) = (str2double(responseTime)-str2double(soundOffset))/1e6;
-        %         if resp==99
-        %             pl_resp(trialNumber) = NaN;
-        %         else
-        %             pl_resp(trialNumber) = resp(trialNumber);
-        %         end
-        %         updateGraph(trialNumber, pl_resp, respTime, smoothing);
-        %
-        %         % log the trial info
-        %         %fprintf(fid,'trial trialType response stillTime stimOnset stimOffset respTime correctionTrial correct\n');
-        %
-        %         fprintf(fid,'%03d %i %i %g %g %g %g %i %i\n',trialNumber, tt, wheelDirection, ...
-        %             str2double(mouseStillTime),str2double(soundOnset), str2double(soundOffset), ...
-        %             str2double(responseTime),correctionTrial,str2double(responseOutcome));
-        %
-        %         % save trial type to a vector
-        %         %         TrialType(trialNumber) = tt;
-        %
-        %         % make sure we're ready for the next trial
-        %         if strcmp(params.device,'NIDAQ') || contains(params.device,'Lynx E44')
-        %             if s.IsRunning
-        %                 wait(s);
-        %             end
-        %         end
-        %         end
     end
-    %     end
-
-    %     if flag
-    %         delete(p)
-    %         blank_hex = [params.basePath filesep 'hexFiles' filesep 'blank.ino.hex'];
-    %         [~, cmdOut] = loadArduinoSketch(params.com,blank_hex);
-    %         disp(cmdOut)
-    %         disp(['Total trials: ' num2str(trialNumber)])
-    %         fprintf('Percent correct: %02.2f\n',mean(resp(resp~=99)));
-    %         delete(instrfindall)
-    %         fclose(fid);
-    %         delete(p);
-    %
-    %     end
 end
 
 if strcmp(params.device,'NIDAQ')
@@ -313,18 +273,6 @@ clear all %#ok<CLALL>
 disp('Done');
 fclose('all');
 
-
-function flag = check_keyboard
-% Exit statement
-[~,~,keyCode] = KbCheck;
-flag = false;
-if sum(keyCode) == 1
-    if strcmp(KbName(keyCode),'ESCAPE')
-        flag = true;
-    end
-else
-    flag = false;
-end
 
 
 function y = envelope_KCW(s,t,fs)
