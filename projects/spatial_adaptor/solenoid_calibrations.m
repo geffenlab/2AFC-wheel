@@ -1,3 +1,81 @@
+%% 5 MAY 2022 solenoid calibration LEFT 
+baseline_weight = 1.1321;
+n = [100 ]; % number of valve openings
+delay = [50 ]; % ms
+weight = [1.6376 ]; % weight with water from testing
+ul_opening = zeros(size(weight));
+for ii = 1:length(delay)
+    ul_opening(ii) = (weight(ii)-baseline_weight)/n(ii)*1000;
+end
+
+figure
+[~,i] = sort(delay);
+plot(delay(i),ul_opening(i),'ok','LineWidth',2)
+set(gca,'FontSize',14)
+xlabel('delay (ms)')
+ylabel('\mul per opening')
+axis tight
+
+mdl = fitlm(delay,ul_opening);
+pred_x = (10:1:250)';
+pred_ul = predict(mdl,pred_x);
+hold on;
+plot(pred_x,pred_ul,'r-','LineWidth',2)
+
+fprintf('closest to 5 ul: %d ms\n',pred_x(knnsearch(pred_ul,5)))
+
+%% 5 MAY 2022 solenoid calibration CENTER 
+baseline_weight = 1.1321;
+n = [100 100]; % number of valve openings
+delay = [50 55]; % ms
+weight = [1.6252 1.6428]; % weight with water from testing
+ul_opening = zeros(size(weight));
+for ii = 1:length(delay)
+    ul_opening(ii) = (weight(ii)-baseline_weight)/n(ii)*1000;
+end
+
+figure
+[~,i] = sort(delay);
+plot(delay(i),ul_opening(i),'ok','LineWidth',2)
+set(gca,'FontSize',14)
+xlabel('delay (ms)')
+ylabel('\mul per opening')
+axis tight
+
+mdl = fitlm(delay,ul_opening);
+pred_x = (10:1:250)';
+pred_ul = predict(mdl,pred_x);
+hold on;
+plot(pred_x,pred_ul,'r-','LineWidth',2)
+
+fprintf('closest to 5 ul: %d ms\n',pred_x(knnsearch(pred_ul,5)))
+
+%% 5 MAY 2022 solenoid calibration RIGHT 
+baseline_weight = 1.1321;
+n = [100 100 100]; % number of valve openings
+delay = [100 70 50]; % ms
+weight = [1.8586 1.7098 1.6471]; % weight with water from testing
+ul_opening = zeros(size(weight));
+for ii = 1:length(delay)
+    ul_opening(ii) = (weight(ii)-baseline_weight)/n(ii)*1000;
+end
+
+figure
+[~,i] = sort(delay);
+plot(delay(i),ul_opening(i),'ok','LineWidth',2)
+set(gca,'FontSize',14)
+xlabel('delay (ms)')
+ylabel('\mul per opening')
+axis tight
+
+mdl = fitlm(delay,ul_opening);
+pred_x = (10:1:250)';
+pred_ul = predict(mdl,pred_x);
+hold on;
+plot(pred_x,pred_ul,'r-','LineWidth',2)
+
+fprintf('closest to 5 ul: %d ms\n',pred_x(knnsearch(pred_ul,5)))
+
 %% 14 Feb 2022 solenoid calibration 
 baseline_weight = 1.1308;
 n = [100 100 100 100 100]; % number of valve openings

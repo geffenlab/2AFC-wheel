@@ -1,11 +1,12 @@
-const int pin = 9;
+const int pin = 10;
+const int rewardTime = 50;
 int state = 48; // zero on the keyboard
 int i = 1;
 void setup() {
   // put your setup code here, to run once:
   pinMode(pin, OUTPUT);
-
-  Serial.begin(19200);
+  digitalWrite(pin, LOW);
+  Serial.begin(115200);
 }
 
 void loop() {
@@ -24,7 +25,7 @@ void loop() {
     for (int i = 1; i <= 50; i++) {
       Serial.println(i);
       digitalWrite(pin, HIGH);
-      delay(200);
+      delay(rewardTime);
       digitalWrite(pin, LOW);
       delay(50);
     }
