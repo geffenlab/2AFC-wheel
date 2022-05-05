@@ -24,9 +24,9 @@ float rewardTime_R;        // ms
 signed long t;
 signed long time;
 signed long rewardInterval;
-signed long center_triggered = millis();
-signed long left_triggered = millis();
-signed long right_triggered = millis();
+signed long center_triggered = 5001;
+signed long left_triggered = 5001;
+signed long right_triggered = 5001;
 
 // other stuff:
 String output;
@@ -84,15 +84,20 @@ void setup() {
   // clear out the serial
   Serial.read();
   Serial.read();
+
+
 }
 
 void loop() {
 
   input = check_inputs();
+  static unsigned long centerNextTime = millis()+rewardInterval;
+  static unsigned long leftNextTime = millis()+rewardInterval;
+  static unsigned long rightNextTime = millis()+rewardInterval;
 
-  if  (input == "center" & (rewardInterval - center_triggered) < 0) { // wait for mouse to do center nose-poke
+  if  (input == "center" & centerNextTime < millis()) { // wait for mouse to do center nose-poke
     t = micros();
-    center_triggered = millis();       // Mark time at which timer started
+    centerNextTime = millis() + rewardInterval;
     solenoid_out('C');
     trialCnt++;
     sprintf(trialStr, "%04d ", trialCnt);
@@ -100,9 +105,9 @@ void loop() {
     Serial.print("CENTER ");
     Serial.println(t);
 
-  } else if  (input == "left" & (rewardInterval - left_triggered) < 0) { // wait for mouse to do center nose-poke
+  } else if  (input == "left" & leftNextTime < millis()) { // wait for mouse to do center nose-poke
     t = micros();
-    left_triggered = millis();       // Mark time at which timer started
+    leftNextTime = millis() + rewardInterval;
     solenoid_out('L');
     trialCnt++;
     sprintf(trialStr, "%04d ", trialCnt);
@@ -110,9 +115,9 @@ void loop() {
     Serial.print("LEFT ");
     Serial.println(t);
 
-  } else if  (input == "right" & (rewardInterval - right_triggered) < 0) { // wait for mouse to do center nose-poke
+  } else if  (input == "right" & rightNextTime < millis()) { // wait for mouse to do center nose-poke
     t = micros();
-    right_triggered = millis();       // Mark time at which timer started
+    rightNextTime = millis() + rewardInterval;
     solenoid_out('R');
     trialCnt++;
     sprintf(trialStr, "%04d ", trialCnt);
