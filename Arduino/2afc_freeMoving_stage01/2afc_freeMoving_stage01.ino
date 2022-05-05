@@ -91,9 +91,9 @@ void setup() {
 void loop() {
 
   input = check_inputs();
-  static unsigned long centerNextTime = millis()+rewardInterval;
-  static unsigned long leftNextTime = millis()+rewardInterval;
-  static unsigned long rightNextTime = millis()+rewardInterval;
+  static signed long centerNextTime = millis()+rewardInterval;
+  static signed long leftNextTime = millis()+rewardInterval;
+  static signed long rightNextTime = millis()+rewardInterval;
 
   if  (input == "center" & centerNextTime < millis()) { // wait for mouse to do center nose-poke
     t = micros();
