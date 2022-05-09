@@ -1,4 +1,4 @@
-const int pin = 10;
+const int pin = 8;
 const int rewardTime = 50;
 int state = 48; // zero on the keyboard
 int i = 1;

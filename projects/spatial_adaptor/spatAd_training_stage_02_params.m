@@ -22,16 +22,16 @@ stimInfo.stimFunction       = 'spatialAdaptorGen';  % stimulus function
 params.stimFunc = 'spatialAdaptorGen(stimInfo,params);';
 params.taskType = 'training_02';
 params.beh_func = 'freeMoving_2AFC_stage_01_02';
-params.hexFile = 'freeMoving_2AFC_stage_02.ino.hex';
-params.com = 'COM7';
+params.hexFile = '2afc_freeMoving_stage02.ino.hex';
+params.com = 'COM5';
 params.device = 'Lynx E44';
 params.channel = [1 2 3 4];
 params.fs = 192e3;
 
 % specific task parameters
-params.rewardDuration_L = 250;
-params.rewardDuration_R = 250;
-params.rewardDuration_C = 250;
+params.rewardDuration_L = 50;
+params.rewardDuration_R = 50;
+params.rewardDuration_C = 50;
 params.rewardInterval = 5000; % seconds
 params.trialTypeRatios    = [50 50];
 params.rewardContingency  = [1 2];

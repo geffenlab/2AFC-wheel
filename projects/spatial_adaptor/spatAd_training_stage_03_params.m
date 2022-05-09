@@ -11,9 +11,9 @@ stimInfo.adaptor_pip_dur    = 0.005;           % duration of individual adaptor 
 stimInfo.adaptor_level      = 60;               % mean level dB
 stimInfo.adaptor_bandwidth  = [5 60];        % adaptor bandwidth in kHz
 stimInfo.target_dur         = 0.5;              % target duration in s
-stimInfo.target_level       = 60;               % mean level dB
+stimInfo.target_level       = 70;               % mean level dB
 stimInfo.target_ILDs        = [-30,30];        % ILD of target
-stimInfo.target_bandwidth   = [10 40];        % target bandwidth in kHz
+stimInfo.target_bandwidth   = [5 60];        % target bandwidth in kHz
 stimInfo.envDur             = 0.005;            % duration of envelope in s
 stimInfo.stimFunction       = 'spatialAdaptorGen'; % stimulus function
 
@@ -22,31 +22,31 @@ stimInfo.stimFunction       = 'spatialAdaptorGen'; % stimulus function
 params.stimFunc = 'spatialAdaptorGen(stimInfo,params);';
 params.taskType = 'training_03';
 params.beh_func = 'freeMoving_2AFC_stage_03';
-params.hexFile = 'freeMoving_2AFC_stage_03.ino.hex';
-params.com = 'COM7';
+params.hexFile = '2afc_freeMoving_stage03.ino.hex';
+params.com = 'COM5';
 params.device = 'Lynx E44';
 params.channel = [1 2 3 4];
 params.fs = 192e3;
 
 % specific task parameters
-params.rewardDuration_L = 250;
-params.rewardDuration_R = 250;
-params.rewardDuration_C = 250;
-params.holdTimeMin = 1;
-params.holdTimeMax = 250;
+params.rewardDuration_L = 50;
+params.rewardDuration_R = 50;
+params.rewardDuration_C = 50;
+params.holdTimeMin = 0;
+params.holdTimeMax = 0;
 params.timeoutDuration    = 0;
 params.trialTypeRatios    = [50 50];
 params.rewardContingency  = [1 2];
-params.timeOutContingency = [1 1];
+params.timeOutContingency = [0 0];
 
 % filter parameters
-params.filtFile_left = '220210_2afc_LEFTspk_LynxE44_5k-60k_fs192k_FLATNOISE';
-params.filtFile_right = '220210_2afc_RIGHTspk_LynxE44_5k-60k_fs192k_FLATNOISE';
+params.filtFile_left = '220503_2afc_LEFTspk_LynxE44_5k-60k_fs192k';
+params.filtFile_right = '220503_2afc_RIGHTspk_LynxE44_5k-60k_fs192k';
 params.ampF = 10/11;
-params.leftspk_adaptor_offset = -1.1;
-params.rightspk_adaptor_offset = -1;
-params.leftspk_target_offset = 2;
-params.rightspk_target_offset = 2;
+params.leftspk_adaptor_offset = 0;
+params.rightspk_adaptor_offset = 0;
+params.leftspk_target_offset = 0;
+params.rightspk_target_offset = 0;
 
 
 

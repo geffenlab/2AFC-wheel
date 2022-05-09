@@ -25,58 +25,63 @@ end
 %% Choose the target_trial_ILD
 si.target_trial_ILD = si.target_ILDs(si.trialType);
 
- 
+
 %% Make the adaptor
-n_pips = si.adaptor_dur/si.adaptor_pip_dur;
-pip_ILDs = si.adaptor_ILD + si.adaptor_SD.*randn(n_pips,1);
-t = rand(si.adaptor_dur*si.fs,1);                           % create noise
-[b,a] = butter(7,si.adaptor_bandwidth*1000/(si.fs/2));      % create filter
-t = filtfilt(b,a,t);                                        % filter
+if si.adaptor_dur > 0
+    n_pips = si.adaptor_dur/si.adaptor_pip_dur;
+    pip_ILDs = si.adaptor_ILD + si.adaptor_SD.*randn(n_pips,1);
+    t = rand(si.adaptor_dur*si.fs,1);                           % create noise
+    [b,a] = butter(7,si.adaptor_bandwidth*1000/(si.fs/2));      % create filter
+    t = filtfilt(b,a,t);                                        % filter
 
-% apply speaker filter
-tL = conv(t,si.FILT_left,'same');
-tR = conv(t,si.FILT_right,'same');
+    % apply speaker filter
+    tL = conv(t,si.FILT_left,'same');
+    tR = conv(t,si.FILT_right,'same');
 
-% Attenuate to baseline level (70 dB) and then adaptor level
-left_att = si.adaptor_level - 70 + params.leftspk_adaptor_offset;
-right_att = si.adaptor_level - 70 + params.rightspk_adaptor_offset;
-tL = tL.*10.^(left_att/20);
-tR = tR.*10.^(right_att/20);
+    % Attenuate to baseline level (70 dB) and then adaptor level
+    left_att = si.adaptor_level - 70 + params.leftspk_adaptor_offset;
+    right_att = si.adaptor_level - 70 + params.rightspk_adaptor_offset;
+    tL = tL.*10.^(left_att/20);
+    tR = tR.*10.^(right_att/20);
 
-% Make ramp and apply
-si.ramp_dur = 0.001; % ramp duration in s
-ramp_samp = si.ramp_dur*si.fs;
-ramp_env = zeros(length(t),1);
-for ii = 1:length(pip_ILDs)
-    range = (ii-1)*(si.adaptor_pip_dur*si.fs)+1:ii*(si.adaptor_pip_dur*si.fs);
-    ramp_env(range) = pip_ILDs(ii)/2;
+    % Make ramp and apply
+    si.ramp_dur = 0.001; % ramp duration in s
+    ramp_samp = si.ramp_dur*si.fs;
+    ramp_env = zeros(length(t),1);
+    for ii = 1:length(pip_ILDs)
+        range = (ii-1)*(si.adaptor_pip_dur*si.fs)+1:ii*(si.adaptor_pip_dur*si.fs);
+        ramp_env(range) = pip_ILDs(ii)/2;
+    end
+    for ii = 1:length(pip_ILDs)-1
+        range = ii*(si.adaptor_pip_dur*si.fs)-(ramp_samp/2)+1:ii*(si.adaptor_pip_dur*si.fs)+(ramp_samp/2);
+        ramp_env(range) = interp1([1 2],[pip_ILDs(ii)/2 pip_ILDs(ii+1)/2],linspace(1,2,ramp_samp));
+    end
+    ramp_env(1:ramp_samp/2) = interp1([1 2],[0 pip_ILDs(1)/2],linspace(1,2,ramp_samp/2));
+    ramp_env(end-ramp_samp/2+1:end) = interp1([1 2],[pip_ILDs(end)/2 0],linspace(1,2,ramp_samp/2));
+
+    tL = tL.*10.^(-ramp_env/20);
+    tR = tR.*10.^(ramp_env/20);
+
+
+
+
+    % tL = t;
+    % tR = t;
+    % for ii = 1:length(pip_ILDs)
+    %     range = (ii-1)*(si.adaptor_pip_dur*si.fs)+1:ii*(si.adaptor_pip_dur*si.fs);
+    %     tL(range) = tL(range).*10^(-(pip_ILDs(ii)/2)/20);
+    %     tR(range) = tR(range).*10^((pip_ILDs(ii)/2)/20);
+    % end
+    %                                      % change ILD
+    %
+    % tL = envelopeKCW(tL,si.envDur*1000,si.fs);
+    % tR = envelopeKCW(tR,si.envDur*1000,si.fs);
+    adaptor = [tL,tR];
+    %  sound(adaptor/100,si.fs)
+
+else
+    adaptor = [];
 end
-for ii = 1:length(pip_ILDs)-1
-    range = ii*(si.adaptor_pip_dur*si.fs)-(ramp_samp/2)+1:ii*(si.adaptor_pip_dur*si.fs)+(ramp_samp/2);
-    ramp_env(range) = interp1([1 2],[pip_ILDs(ii)/2 pip_ILDs(ii+1)/2],linspace(1,2,ramp_samp));
-end
-ramp_env(1:ramp_samp/2) = interp1([1 2],[0 pip_ILDs(1)/2],linspace(1,2,ramp_samp/2));
-ramp_env(end-ramp_samp/2+1:end) = interp1([1 2],[pip_ILDs(end)/2 0],linspace(1,2,ramp_samp/2));
-
-tL = tL.*10.^(-ramp_env/20);
-tR = tR.*10.^(ramp_env/20);
-
-
-
-
-% tL = t;
-% tR = t;
-% for ii = 1:length(pip_ILDs)
-%     range = (ii-1)*(si.adaptor_pip_dur*si.fs)+1:ii*(si.adaptor_pip_dur*si.fs);
-%     tL(range) = tL(range).*10^(-(pip_ILDs(ii)/2)/20);
-%     tR(range) = tR(range).*10^((pip_ILDs(ii)/2)/20);
-% end
-%                                      % change ILD
-%  
-% tL = envelopeKCW(tL,si.envDur*1000,si.fs);
-% tR = envelopeKCW(tR,si.envDur*1000,si.fs);
-adaptor = [tL,tR];
-%  sound(adaptor/100,si.fs)
 
 %% Make the target
 target_ild = si.target_trial_ILD;

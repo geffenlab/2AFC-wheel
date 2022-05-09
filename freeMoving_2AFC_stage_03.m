@@ -75,6 +75,7 @@ trialNumber = 0;
 newTrial = 1;
 ttCounter = 1; % trialType counter
 ctCounter = 0; % correction trial counter
+correctionTrial = 0;
 
 % beh tracking
 respTime_track = zeros(1000,1);
@@ -102,7 +103,7 @@ while cnt < 2000
             tt = trialType(ttCounter);
             cd(params.projPath);
             if exist('stimInfo','var')
-                stimInfo.trialType = tt; %#ok<STRNU>
+                stimInfo.trialType = tt; 
             end
             [stim, events] = eval(params.stimFunc); % Make the stimulus
             cd(params.basePath);
@@ -252,6 +253,9 @@ while cnt < 2000
 
         newTrial = 0;
 
+   elseif contains(out,'EARLYDEP')
+        PsychPortAudio('Stop',s,2); % the 2 means stop asap (http://psychtoolbox.org/docs/PsychPortAudio-Stop)
+        newTrial = 0;
 
     elseif contains(out,'USEREXIT')
         delete(p)
@@ -281,7 +285,7 @@ if size(s,1)==1
     s = s';
 end
 
-ns = round(t*fs);
+ns = round(t/1000*fs);
 r = (sin(linspace(-pi/2,pi/2,ns))/2)+0.5;
 r = [r ones(1,length(s) - (ns*2)) fliplr(r)]';
 y = s .* r;
