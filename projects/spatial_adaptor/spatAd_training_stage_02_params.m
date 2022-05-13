@@ -29,9 +29,9 @@ params.channel = [1 2 3 4];
 params.fs = 192e3;
 
 % specific task parameters
-params.rewardDuration_L = 50;
-params.rewardDuration_R = 50;
-params.rewardDuration_C = 50;
+params.rewardDuration_L = 75;
+params.rewardDuration_R = 75;
+params.rewardDuration_C = 75;
 params.rewardInterval = 5000; % seconds
 params.trialTypeRatios    = [50 50];
 params.rewardContingency  = [1 2];

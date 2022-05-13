@@ -6,7 +6,7 @@ rng(stimInfo.seed)
 stimInfo.fs                 = 192e3;            % sample rates
 stimInfo.adaptor_ILDs       = 0;              % ILD of the adaptor in dB
 stimInfo.adaptor_SDs        = 10;               % standard deviation of adaptor
-stimInfo.adaptor_dur        = 0.5;              % adaptor duration in s
+stimInfo.adaptor_dur        = 0.01;              % adaptor duration in s
 stimInfo.adaptor_pip_dur    = 0.005;           % duration of individual adaptor pips
 stimInfo.adaptor_level      = 60;               % mean level dB
 stimInfo.adaptor_bandwidth  = [5 60];        % adaptor bandwidth in kHz
@@ -35,6 +35,8 @@ params.rewardDuration_C = 50;
 params.holdTimeMin = 0;
 params.holdTimeMax = 0;
 params.timeoutDuration    = 0;
+params.centerDebounce = 20;
+params.waitTime = 250; % how much does the mouse wait after stim onset
 params.trialTypeRatios    = [50 50];
 params.rewardContingency  = [1 2];
 params.timeOutContingency = [0 0];

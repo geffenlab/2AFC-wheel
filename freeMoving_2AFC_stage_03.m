@@ -40,8 +40,8 @@ p = setupSerial(params.com);
 serialRead(p);
 
 % send variables to the arduino
-fprintf(p,'%f %f %f %d %f %f',[params.rewardDuration_L, params.rewardDuration_R, params.rewardDuration_C, params.timeoutDuration, ...
-     params.holdTimeMin, params.holdTimeMax]);
+fprintf(p,'%f %f %f %d %f %f %f',[params.rewardDuration_L, params.rewardDuration_R, params.rewardDuration_C, params.timeoutDuration, ...
+     params.holdTimeMin, params.holdTimeMax, params.centerDebounce]);
 WaitSecs(.5);
 disp('parameters sent');
 
@@ -136,7 +136,8 @@ while cnt < 2000
         end
         
         % work out audio duration
-        audio_dur = (size(audio,1)/fs*1000);
+%         audio_dur = (size(audio,1)/fs*1000);
+       % audio_dur = stimInfo.adaptor_dur*1000;
         
         % Add zeros to the stim to loop it
         audio = [audio; zeros(fs*1,size(audio,2))];
@@ -146,7 +147,7 @@ while cnt < 2000
         fprintf('Trial %03d - %02d\n',trialNumber,tt);
 
         % send trial info to arduino
-        fprintf(p,'%i %i %i',[rewardType, giveTO, audio_dur]);
+        fprintf(p,'%i %i %i',[rewardType, giveTO, params.waitTime]);
 
     elseif contains(out,'ENDHOLDTIME')
         % present the audio
@@ -172,7 +173,7 @@ while cnt < 2000
         responseOutcome = str2double(out(d));
         
         outcome_track(trialNumber) = responseOutcome;
-        respTime_track(trialNumber) = (respTime-stimOff)/1000000;
+%         respTime_track(trialNumber) = (respTime-stimOff)/1000000;
         updateGraph(trialNumber,correctionTrial,outcome_track,respTime_track(trialNumber),15)
 
         % determine next trialType
