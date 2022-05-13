@@ -190,9 +190,9 @@ void loop() {
             state = 3;
             onset = false; // set sound onset detection parameter to false
             long r = random(100);
-            if (r < 5) { // reward center 5% of the time
-              solenoid_out('C');
-            }
+            //if (r < 5) { // reward center 5% of the time
+              
+            //}
           }
         }
 
@@ -206,7 +206,7 @@ void loop() {
         // Serial.println(timer);
         // Serial.println(check_inputs());
         input = check_inputs();
-        //  Serial.println(input);
+       Serial.println(input);
 
         if  (input == "center_audio" & !onset) {  // mouse is at center and sound is on
           t = micros();
@@ -238,6 +238,7 @@ void loop() {
           Serial.print("STIMOFF ");
           Serial.println(t);
           state = 4;
+          solenoid_out('C');
           break;
 
         } else if (input == "audio" & onset) { // mouse is not center and sound is presenting
@@ -261,7 +262,7 @@ void loop() {
 
     //********************************************************************//
     case 4: { // MONITOR FOR RESPONSE
-
+        
         bool resp = false;
         input = check_inputs();
 
