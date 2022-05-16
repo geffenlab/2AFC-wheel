@@ -375,6 +375,7 @@ result check_inputs() { // checks PORTD status
   return new_result;
 }
 
+//********************************************************************************//
 void solenoid_out(char solenoid_output) {
   switch (solenoid_output) {
     case 'L': {

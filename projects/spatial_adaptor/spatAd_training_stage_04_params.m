@@ -20,9 +20,9 @@ stimInfo.stimFunction       = 'spatialAdaptorGen'; % stimulus function
 %% TASK PARAMETERS
 % task specific stuff
 params.stimFunc = 'spatialAdaptorGen(stimInfo,params);';
-params.taskType = 'training_03';
-params.beh_func = 'freeMoving_2AFC_stage_03';
-params.hexFile = '2afc_freeMoving_stage03.ino.hex';
+params.taskType = 'training_04';
+params.beh_func = 'freeMoving_2AFC_stage_04';
+params.hexFile = '2afc_freeMoving_stage04.ino.hex';
 params.com = 'COM5';
 params.device = 'Lynx E44';
 params.channel = [1 2 3 4];
@@ -36,10 +36,10 @@ params.holdTimeMin = 0;
 params.holdTimeMax = 0;
 params.timeoutDuration    = 0;
 params.centerDebounce = 20;
-params.waitTime = 250; % how much does the mouse wait after stim onset
+params.waitTime = 251; % how much does the mouse wait after stim onset
 params.trialTypeRatios    = [50 50];
 params.rewardContingency  = [1 2];
-params.timeOutContingency = [0 0];
+params.timeOutContingency = [1 1];
 
 % filter parameters
 params.filtFile_left = '220503_2afc_LEFTspk_LynxE44_5k-60k_fs192k';

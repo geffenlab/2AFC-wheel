@@ -58,7 +58,7 @@ end
 trialType = trialType(randperm(length(trialType)));
 
 % make a noise burst for punishments
-noiseBurst = rand(1,0.3*fs)/10;
+noiseBurst = randn(1,0.3*fs)/10;
 noiseBurst = envelope_KCW(noiseBurst,1,fs);
 
 % filter noise bursts and clicks
@@ -94,28 +94,30 @@ while cnt < 2000
     fprintf('%s\n',out);
     fprintf(fid,'\n%s',out);
 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     if contains(out,'TRIALON')
         % at the trial start:
         trialNumber = trialNumber + 1;
         % check for correction trial
-        if newTrial==1 && correctionTrial==0 % make a new stimulus
+        if newTrial==1 && correctionTrial==0                % make a new stimulus
             correctionTrial = 0;
             tt = trialType(ttCounter);
             cd(params.projPath);
             if exist('stimInfo','var')
                 stimInfo.trialType = tt; 
             end
-            [stim, events] = eval(params.stimFunc); % Make the stimulus
+            [stim, events] = eval(params.stimFunc);         % Make the stimulus
             cd(params.basePath);
             rewardType = params.rewardContingency(tt);
-            giveTO = params.timeOutContingency(tt);      % give time out?
+            giveTO = params.timeOutContingency(tt);         % give time out?
             if rewardType==0
-                rewardType = 99; % arduino randomly rewards
+                rewardType = 99;                            % arduino randomly rewards
             end
-            ttCounter = ttCounter+1; % increase trial type counter
+            ttCounter = ttCounter+1;                        % increase trial type counter
             fprintf(fid,'\n%s',sprintf('%04dCORRECTIONTRIAL%d',trialNumber,0));
             fprintf('\n%s',sprintf('\n%04dCORRECTIONTRIAL%d\n',trialNumber,0));
-        elseif newTrial== 0  % continue with same sound if not had too many correction trials
+
+        elseif newTrial== 0                                 % continue with same sound if not had too many correction trials
             correctionTrial = 1;
             fprintf(fid,'\n%s',sprintf('%04dCORRECTIONTRIAL%d',trialNumber,1));
             fprintf('\n%s',sprintf('%04dCORRECTIONTRIAL%d\n',trialNumber,1));
@@ -147,23 +149,27 @@ while cnt < 2000
         fprintf('Trial %03d - %02d\n',trialNumber,tt);
 
         % send trial info to arduino
-        fprintf(p,'%i %i %i',[rewardType, giveTO, params.waitTime]);
+         fprintf(p,'%i %i %i',[rewardType, giveTO, params.waitTime]);
 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     elseif contains(out,'ENDHOLDTIME')
         % present the audio
         reps = 0; % plays the buffer on repeat
         PsychPortAudio('Start',s,reps);
-
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     elseif contains(out,'STIMOFF')
         d = regexp(out,'\d');
         d = d(5:end);
         stimOff = str2double(out(d));
-        
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
     elseif contains(out,'RESPTIME')
         d = regexp(out,'\d');
         d = d(5:end);
         respTime = str2double(out(d));
 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
     elseif contains(out,'TRIALOUTCOME')
          PsychPortAudio('Stop',s,2); % the 2 means stop asap (http://psychtoolbox.org/docs/PsychPortAudio-Stop)
         
@@ -185,15 +191,7 @@ while cnt < 2000
             while status.Active==1
                 status = PsychPortAudio('GetStatus', s);
             end
-
-            %             if strcmp(params.device,'NIDAQ') || contains(params.device,'Lynx E44')
-            %                 if s.IsRunning
-            %                     wait(s);
-            %                 end
-            %             end
             correctionTrial = 0;
-            %             queueOutput(s,[click; click;click;click]'.*params.ampF,params.device);
-            %             startOutput(s,params.device);
         elseif responseOutcome==99
             newTrial = 1;
             ctCounter = 0;
@@ -206,27 +204,12 @@ while cnt < 2000
                 correctionTrial = 1;
                 newTrial = 0;
                 ctCounter = ctCounter + 1;
-                %             nb3 = zeros(1,length(noiseBurstL));
-                %                 if strcmp(params.device,'NIDAQ') || contains(params.device,'Lynx E44')
-
-                %                     if s.IsRunning
-                %                         stop(s);
-                %                     end
-                %                 end
-                %                 queueOutput(s,[noiseBurstL; noiseBurstR;ones(size(noiseBurstL));ones(size(noiseBurstL))]'.*params.ampF,params.device);
-                %                 startOutput(s,params.device);
                 status = PsychPortAudio('GetStatus', s);
                 while status.Active==1
                     status = PsychPortAudio('GetStatus', s);
                 end
                 PsychPortAudio('FillBuffer',s,[noiseBurstL; noiseBurstR;ones(size(noiseBurstL));ones(size(noiseBurstL))].*params.ampF);
                 PsychPortAudio('Start',s,1);
-                %             if strcmp(params.device,'NIDAQ') || contains(params.device,'Lynx E44')
-                %                 if s.IsRunning
-                %                     wait(s);
-                %                 end
-                %             end
-
             end
         end
         if ctCounter>3
@@ -234,17 +217,13 @@ while cnt < 2000
             ctCounter = 0;
             correctionTrial = 0;
         end
-        % make sure we're ready for the next trial
-        %         if strcmp(params.device,'NIDAQ') || contains(params.device,'Lynx E44')
-        %             if s.IsRunning
-        %                 stop(s);
-        %             end
         status = PsychPortAudio('GetStatus', s);
         while status.Active==1
             status = PsychPortAudio('GetStatus', s);
         end
         %         end
 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
     elseif any(contains(out,{'NOAUDIOONEVENT','NOAUDIOOFFEVENT'}))
 
         status = PsychPortAudio('GetStatus', s);
@@ -254,11 +233,13 @@ while cnt < 2000
 
         newTrial = 0;
 
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%     
    elseif contains(out,'EARLYDEP')
         PsychPortAudio('Stop',s,2); % the 2 means stop asap (http://psychtoolbox.org/docs/PsychPortAudio-Stop)
         newTrial = 0;
 
-    elseif contains(out,'USEREXIT')
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%     
+   elseif contains(out,'USEREXIT')
         delete(p)
         PsychPortAudio('Close', s);
         blank_hex = [params.basePath filesep 'hexFiles' filesep 'blank.ino.hex'];

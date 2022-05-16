@@ -6,37 +6,33 @@ KbName('UnifyKeyNames');
 commandwindow
 
 %% SETUP
+
 % paths
 cd(baseDir);
 params.basePath = pwd;
 params.projPath = [params.basePath filesep 'projects' filesep project];
 params.paramFile = [params.projPath filesep parameterFile];
-params.hexFile = [params.basePath filesep 'hexFiles' filesep '2afc_freeMoving_photoDetectors.ino.hex'];
+
+% load parameters
+run(params.paramFile);
+
+% more paths
+params.hexPath = [params.basePath filesep 'hexFiles' filesep params.hexFile];
 params.dataPath = [params.basePath filesep 'mice' filesep mouse];
 git = strfind(params.basePath,'GitHub');
 params.githubPath = params.basePath(1:git+5);
 params.sessID = datestr(now,'yyyymmdd_HHMM');
 
-% load parameters
-if contains(parameterFile,'.txt')
-    % load text file
-    [params, ~] = loadParameters(params.paramFile);
-elseif contains(parameterFile,'.mat')
-    % load mat file
-    load(params.paramFile);
-elseif contains(parameterFile,'.m')
-    % run script
-    run(params.paramFile);
-end
+% load filters
+[params, stimInfo] = loadFilters(params, stimInfo); %#ok<NODEF>
 
 % open a file to write to
 params.fn = [mouse '_' params.sessID '_' params.taskType];
 fn = [params.dataPath filesep params.fn '.txt'];
 fid = fopen(fn,'w');
-% fprintf(fid,'trial trialType response stillTime stimOnset stimOffset respTime correctionTrial correct\n');
 
 % load arduino sketch
-[~, cmdOut] = loadArduinoSketch(params.com,params.hexFile);
+[~, cmdOut] = loadArduinoSketch(params.com,params.hexPath);
 disp(cmdOut)
 
 % setup serial port
@@ -44,8 +40,8 @@ p = setupSerial(params.com);
 serialRead(p);
 
 % send variables to the arduino
-fprintf(p,'%f %d %f %f',[params.rewardDuration params.timeoutDuration ...
-     params.holdTimeMin params.holdTimeMax]);
+fprintf(p,'%f %f %f %d %f %f %f',[params.rewardDuration_L, params.rewardDuration_R, params.rewardDuration_C, params.timeoutDuration, ...
+    params.holdTimeMin, params.holdTimeMax, params.centerDebounce]);
 WaitSecs(.5);
 disp('parameters sent');
 
@@ -62,24 +58,20 @@ end
 trialType = trialType(randperm(length(trialType)));
 
 % make a noise burst for punishments
-noiseBurst = rand(1,0.3*fs)/10;
-noiseBurst = envelope_KCW(noiseBurst,.005,fs);
-
+noiseBurst = tone(10000,3/2*pi,0.5,fs)/10;
 
 % filter noise bursts and clicks
-if isfield(params,'filt')
-    noiseBurstL = conv(noiseBurst,params.filt,'same');
-    noiseBurstR = noiseBurstL;
-else
-    noiseBurstL = conv(noiseBurst,params.filt_left,'same');
-    noiseBurstR = conv(noiseBurst,params.filt_right,'same');
-end
+noiseBurstL = conv(noiseBurst,params.filt_left,'same');
+noiseBurstL = envelope_KCW(noiseBurstL(0.1*fs+1:0.3*fs),1,fs);
+noiseBurstR = conv(noiseBurst,params.filt_right,'same');
+noiseBurstR = envelope_KCW(noiseBurstR(0.1*fs+1:0.3*fs),1,fs);
 
 % initialize some counts
 trialNumber = 0;
 newTrial = 1;
-ttCounter = 1;                                              % trialType counter
-ctCounter = 0;                                              % correction trial counter
+ttCounter = 1; % trialType counter
+ctCounter = 0; % correction trial counter
+correctionTrial = 0;
 
 % beh tracking
 respTime_track = zeros(1000,1);
@@ -90,13 +82,13 @@ hold all
 % trial loop
 tt = [];
 cnt = 1;
-correctionTrial = 0;
 
 while cnt < 2000
     out = serialRead(p);
-    fprintf('%s\n',out);
+
     % write to file and to command window
     fprintf(fid,'\n%s',out);
+    fprintf('%s\n',out);
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     if contains(out,'TRIALON')
@@ -108,7 +100,7 @@ while cnt < 2000
             tt = trialType(ttCounter);
             cd(params.projPath);
             if exist('stimInfo','var')
-                stimInfo.trialType = tt;                    %#ok<STRNU>
+                stimInfo.trialType = tt;
             end
             [stim, events] = eval(params.stimFunc);         % Make the stimulus
             cd(params.basePath);
@@ -120,7 +112,7 @@ while cnt < 2000
             ttCounter = ttCounter+1;                        % increase trial type counter
             fprintf(fid,'\n%s',sprintf('%04dCORRECTIONTRIAL%d',trialNumber,0));
             fprintf('\n%s',sprintf('\n%04dCORRECTIONTRIAL%d\n',trialNumber,0));
-        
+
         elseif newTrial== 0                                 % continue with same sound if not had too many correction trials
             correctionTrial = 1;
             fprintf(fid,'\n%s',sprintf('%04dCORRECTIONTRIAL%d',trialNumber,1));
@@ -145,38 +137,40 @@ while cnt < 2000
         % increment trial counter
         fprintf('Trial %03d - %02d\n',trialNumber,tt);
 
-        % work out audio duration
-        audio_dur = (size(audio,1)/fs*1000);
+        %         % work out audio duration
+        %         audio_dur = (size(audio,1)/fs*1000);
 
         % send trial info to arduino and check that it was received
-        fprintf(p,'%i %i %i',[rewardType, giveTO, audio_dur]);
+        fprintf(p,'%i %i %i',[rewardType, giveTO, params.waitTime]);
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     elseif contains(out,'ENDHOLDTIME')
         % present the audio
-        PsychPortAudio('Start',s,1);
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        reps = 1; % play once
+        PsychPortAudio('Start',s,reps);
+
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     elseif contains(out,'STIMOFF')
         d = regexp(out,'\d');
         d = d(5:end);
         stimOff = str2double(out(d));
-        
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     elseif contains(out,'RESPTIME')
         d = regexp(out,'\d');
         d = d(5:end);
         respTime = str2double(out(d));
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     elseif contains(out,'TRIALOUTCOME')
 
+        % extract outcome
         d = regexp(out,'\d');
         d = d(5:end);
         responseOutcome = str2double(out(d));
 
         outcome_track(trialNumber) = responseOutcome;
-        respTime_track(trialNumber) = (respTime-stimOff)/1000000;
+        %         respTime_track(trialNumber) = (respTime-stimOff)/1000000;
         updateGraph(trialNumber,correctionTrial,outcome_track,respTime_track(trialNumber),15)
 
         % determine next trialType
@@ -200,11 +194,8 @@ while cnt < 2000
                 correctionTrial = 1;
                 newTrial = 0;
                 ctCounter = ctCounter + 1;
-                status = PsychPortAudio('GetStatus', s);
-                while status.Active==1
-                    status = PsychPortAudio('GetStatus', s);
-                end
-                PsychPortAudio('FillBuffer',s,[noiseBurstL; noiseBurstR;ones(size(noiseBurstL));ones(size(noiseBurstL))].*params.ampF);
+                PsychPortAudio('Stop',s,2);         % the 2 means stop asap (http://psychtoolbox.org/docs/PsychPortAudio-Stop)
+                PsychPortAudio('FillBuffer',s,([noiseBurstL, noiseBurstR, zeros(size(noiseBurstL)), zeros(size(noiseBurstL))].*params.ampF)');
                 PsychPortAudio('Start',s,1);
 
             end
@@ -220,7 +211,7 @@ while cnt < 2000
             status = PsychPortAudio('GetStatus', s);
         end
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     elseif any(contains(out,{'NOAUDIOONEVENT','NOAUDIOOFFEVENT'}))
 
         status = PsychPortAudio('GetStatus', s);
@@ -230,19 +221,21 @@ while cnt < 2000
 
         newTrial = 0;
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    elseif contains(out,'EARLYDEP')
+        PsychPortAudio('Stop',s,2); % the 2 means stop asap (http://psychtoolbox.org/docs/PsychPortAudio-Stop)
+        newTrial = 0;
+
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     elseif contains(out,'USEREXIT')
         delete(p)
         PsychPortAudio('Close', s);
         blank_hex = [params.basePath filesep 'hexFiles' filesep 'blank.ino.hex'];
         [~, cmdOut] = loadArduinoSketch(params.com,blank_hex);
         disp(cmdOut)
-        %         disp(['Total trials: ' num2str(trialNumber)])
-        %         fprintf('Percent correct: %02.2f\n',mean(resp(resp~=99)));
         delete(instrfindall)
         fclose(fid);
         cnt = 9999;
-        
     end
 end
 
@@ -257,12 +250,17 @@ fclose('all');
 
 
 function y = envelope_KCW(s,t,fs)
-
 if size(s,1)==1
     s = s';
 end
-
-ns = round(t*fs);
+ns = round(t/1000*fs);
 r = (sin(linspace(-pi/2,pi/2,ns))/2)+0.5;
 r = [r ones(1,length(s) - (ns*2)) fliplr(r)]';
 y = s .* r;
+
+function x = tone(f,ph,dur,sf)
+% x=tone(f,ph,dur,sf); returns a sine tone of freq f Hz, phase ph rad, duration dur sec at sample rate sf Hz
+npts=dur*sf;
+inc=2*pi*f/sf;
+x=(0:npts-1)*inc+ph;
+x=cos(x);

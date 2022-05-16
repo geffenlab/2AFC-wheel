@@ -30,7 +30,7 @@ si.target_trial_ILD = si.target_ILDs(si.trialType);
 if si.adaptor_dur > 0
     n_pips = si.adaptor_dur/si.adaptor_pip_dur;
     pip_ILDs = si.adaptor_ILD + si.adaptor_SD.*randn(n_pips,1);
-    t = rand(si.adaptor_dur*si.fs,1);                           % create noise
+    t = randn(si.adaptor_dur*si.fs,1);                           % create noise
     [b,a] = butter(7,si.adaptor_bandwidth*1000/(si.fs/2));      % create filter
     t = filtfilt(b,a,t);                                        % filter
 
@@ -85,7 +85,7 @@ end
 
 %% Make the target
 target_ild = si.target_trial_ILD;
-t = rand(si.target_dur*si.fs,1);                           % create noise
+t = randn(si.target_dur*si.fs,1);                           % create noise
 [b,a] = butter(7,si.target_bandwidth*1000/(si.fs/2));      % create filter
 t = filtfilt(b,a,t);                                        % filter
 
