@@ -42,8 +42,8 @@ params.rewardContingency  = [1 2];
 params.timeOutContingency = [1 1];
 
 % filter parameters
-params.filtFile_left = '220503_2afc_LEFTspk_LynxE44_5k-60k_fs192k';
-params.filtFile_right = '220503_2afc_RIGHTspk_LynxE44_5k-60k_fs192k';
+params.filtFile_left = '220601_2afc_LEFTspk_LynxE44_5k-60k_fs192k';
+params.filtFile_right = '220601_2afc_RIGHTspk_LynxE44_5k-60k_fs192k';
 params.ampF = 10/11;
 params.leftspk_adaptor_offset = 0;
 params.rightspk_adaptor_offset = 0;
