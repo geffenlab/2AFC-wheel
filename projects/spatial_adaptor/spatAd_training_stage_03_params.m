@@ -36,6 +36,7 @@ params.holdTimeMin = 0;
 params.holdTimeMax = 0;
 params.timeoutDuration    = 0;
 params.centerDebounce = 20;
+params.centerRewardProb = 1;
 params.waitTime = 250; % how much does the mouse wait after stim onset
 params.trialTypeRatios    = [50 50];
 params.rewardContingency  = [1 2];

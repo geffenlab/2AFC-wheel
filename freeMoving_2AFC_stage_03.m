@@ -40,8 +40,8 @@ p = setupSerial(params.com);
 serialRead(p);
 
 % send variables to the arduino
-fprintf(p,'%f %f %f %d %f %f %f',[params.rewardDuration_L, params.rewardDuration_R, params.rewardDuration_C, params.timeoutDuration, ...
-     params.holdTimeMin, params.holdTimeMax, params.centerDebounce]);
+fprintf(p,'%f %f %f %d %f %f %f %f',[params.rewardDuration_L, params.rewardDuration_R, params.rewardDuration_C, params.timeoutDuration, ...
+     params.holdTimeMin, params.holdTimeMax, params.centerDebounce params.centerRewardProb]);
 WaitSecs(.5);
 disp('parameters sent');
 

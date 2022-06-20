@@ -24,6 +24,7 @@ float rewardTime_L;      // ms
 float rewardTime_C;      // ms
 float rewardTime_R;      // ms
 float centerDebounce;    // ms
+float centerRewardProb;  // probability (0-1)
 float holdTime;
 signed long t;
 signed long t_sound_end;
@@ -81,7 +82,7 @@ void setup() {
     while (Serial.available() > 0) {
       val[cnt] = Serial.parseFloat();
       cnt++;
-      if (cnt > 6) {
+      if (cnt > 7) {
         done = 1;
         rewardTime_L      = val[0];
         rewardTime_R      = val[1];
@@ -90,6 +91,7 @@ void setup() {
         holdTimeMin       = val[4];
         holdTimeMax       = val[5];
         centerDebounce    = val[6];
+        centerRewardProb  = val[7];
 
 
         Serial.print("REWTIME_L ");
@@ -106,6 +108,8 @@ void setup() {
         Serial.println(val[5]);
         Serial.print("CENTERDEBOUNCE ");
         Serial.println(centerDebounce);
+        Serial.print("CENTERREWARDPROB ");
+        Serial.println(centerRewardProb);
         break;
       }
     }
@@ -230,10 +234,14 @@ void loop() {
             Serial.print("TOTALWAITTIME ");
             Serial.println(t);
             state = 4;
-            //long r = random(100);
-            //if (r < 5) { // reward center 5% of the time
+            float r = random(100);
+            if (r < (centerRewardProb*100)) { // reward center 5% of the time
             solenoid_out('C');
-            //}
+            t = micros();
+            Serial.print(trialStr);
+            Serial.print("CENTERREWARD ");
+            Serial.println(t);
+            }
           }
         }
 
