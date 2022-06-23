@@ -82,7 +82,7 @@ hold all
 % trial loop
 tt = [];
 cnt = 1;
-
+fprintf('%s\n',datestr(clock));
 while cnt < 2000
     out = serialRead(p);
 
