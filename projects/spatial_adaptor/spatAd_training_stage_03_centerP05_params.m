@@ -29,22 +29,22 @@ params.channel = [1 2 3 4];
 params.fs = 192e3;
 
 % specific task parameters
-params.rewardDuration_L = 50;
+params.rewardDuration_L = 68;
 params.rewardDuration_R = 50;
-params.rewardDuration_C = 50;
+params.rewardDuration_C = 70;
 params.holdTimeMin = 0;
 params.holdTimeMax = 0;
 params.timeoutDuration    = 0;
 params.centerDebounce = 20;
 params.centerRewardProb = 0.05;
-params.waitTime = 300; % how much does the mouse wait after stim onset
+params.waitTime = 500; % how much does the mouse wait after stim onset
 params.trialTypeRatios    = [50 50];
 params.rewardContingency  = [1 2];
 params.timeOutContingency = [0 0];
 
 % filter parameters
-params.filtFile_left = '220503_2afc_LEFTspk_LynxE44_5k-60k_fs192k';
-params.filtFile_right = '220503_2afc_RIGHTspk_LynxE44_5k-60k_fs192k';
+params.filtFile_left = '220601_2afc_LEFTspk_LynxE44_5k-60k_fs192k';
+params.filtFile_right = '220601_2afc_RIGHTspk_LynxE44_5k-60k_fs192k';
 params.ampF = 10/11;
 params.leftspk_adaptor_offset = 0;
 params.rightspk_adaptor_offset = 0;

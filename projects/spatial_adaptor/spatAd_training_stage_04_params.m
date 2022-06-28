@@ -29,15 +29,15 @@ params.channel = [1 2 3 4];
 params.fs = 192e3;
 
 % specific task parameters
-params.rewardDuration_L = 50;
+params.rewardDuration_L = 68;
 params.rewardDuration_R = 50;
-params.rewardDuration_C = 50;
+params.rewardDuration_C = 70;
 params.holdTimeMin = 0;
-params.holdTimeMax = 0;
+params.holdTimeMax = 50;
 params.timeoutDuration    = 2000;
 params.centerDebounce = 20;
-params.centerRewardProb = 0.25;
-params.waitTime = 351; % how much does the mouse wait after stim onset
+params.centerRewardProb = 0.2;
+params.waitTime = 500; % how much does the mouse wait after stim onset
 params.trialTypeRatios    = [50 50];
 params.rewardContingency  = [1 2];
 params.timeOutContingency = [1 1];

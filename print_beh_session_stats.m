@@ -27,7 +27,7 @@ to = str2double(out(ind));
 
 ind = contains(C{1},'REWON');
 n_rew = sum(ind);
-ind = contains(c{1},'CENTERREWARD');
+ind = contains(C{1},'CENTERREWARD');
 n_rew = n_rew+sum(ind);
 
 fprintf('Number of rewards: %d\n',n_rew);

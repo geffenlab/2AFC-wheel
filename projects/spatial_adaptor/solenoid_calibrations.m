@@ -1,3 +1,81 @@
+%% 27 JUNE 2022 solenoid calibration LEFT 
+baseline_weight = 1.1310;
+n = [100 100 100]; % number of valve openings
+delay = [100 125 116]; % ms
+weight = [1.5751 1.6606 1.6305]; % weight with water from testing
+ul_opening = zeros(size(weight));
+for ii = 1:length(delay)
+    ul_opening(ii) = (weight(ii)-baseline_weight)/n(ii)*1000;
+end
+
+figure
+[~,i] = sort(delay);
+plot(delay(i),ul_opening(i),'ok','LineWidth',2)
+set(gca,'FontSize',14)
+xlabel('delay (ms)')
+ylabel('\mul per opening')
+axis tight
+
+mdl = fitlm(delay,ul_opening);
+pred_x = (10:1:250)';
+pred_ul = predict(mdl,pred_x);
+hold on;
+plot(pred_x,pred_ul,'r-','LineWidth',2)
+
+fprintf('closest to 5 ul: %d ms\n',pred_x(knnsearch(pred_ul,5)))
+
+
+%% 27 JUNE 2022 solenoid calibration CENTER 
+baseline_weight = 1.1310;
+n = [100 100 100 100]; % number of valve openings
+delay = [92 120 130 124]; % ms
+weight = [1.5325 1.6192 1.6506 1.6356]; % weight with water from testing
+ul_opening = zeros(size(weight));
+for ii = 1:length(delay)
+    ul_opening(ii) = (weight(ii)-baseline_weight)/n(ii)*1000;
+end
+
+figure
+[~,i] = sort(delay);
+plot(delay(i),ul_opening(i),'ok','LineWidth',2)
+set(gca,'FontSize',14)
+xlabel('delay (ms)')
+ylabel('\mul per opening')
+axis tight
+
+mdl = fitlm(delay,ul_opening);
+pred_x = (10:1:250)';
+pred_ul = predict(mdl,pred_x);
+hold on;
+plot(pred_x,pred_ul,'r-','LineWidth',2)
+
+fprintf('closest to 5 ul: %d ms\n',pred_x(knnsearch(pred_ul,5)))
+
+%% 27 JUNE 2022 solenoid calibration RIGHT 
+baseline_weight = 1.1310;
+n = [100 100 100 100 100 100]; % number of valve openings
+delay = [50 50 75 100 100 92]; % ms
+weight = [1.4565 1.4719 1.5705 1.6599 1.6611 1.6332]; % weight with water from testing
+ul_opening = zeros(size(weight));
+for ii = 1:length(delay)
+    ul_opening(ii) = (weight(ii)-baseline_weight)/n(ii)*1000;
+end
+
+figure
+[~,i] = sort(delay);
+plot(delay(i),ul_opening(i),'ok','LineWidth',2)
+set(gca,'FontSize',14)
+xlabel('delay (ms)')
+ylabel('\mul per opening')
+axis tight
+
+mdl = fitlm(delay,ul_opening);
+pred_x = (10:1:250)';
+pred_ul = predict(mdl,pred_x);
+hold on;
+plot(pred_x,pred_ul,'r-','LineWidth',2)
+
+fprintf('closest to 5 ul: %d ms\n',pred_x(knnsearch(pred_ul,5)))
 %% 5 MAY 2022 solenoid calibration LEFT 
 baseline_weight = 1.1321;
 n = [100 ]; % number of valve openings
