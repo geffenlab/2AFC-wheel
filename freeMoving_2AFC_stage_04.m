@@ -243,6 +243,8 @@ if strcmp(params.device,'NIDAQ')
     stop(s);
 end
 print_beh_session_stats(fn)
+fn = [params.dataPath filesep params.fn '.mat'];
+save(fn,'params','stimInfo')
 clear all %#ok<CLALL>
 disp('Done');
 fclose('all');

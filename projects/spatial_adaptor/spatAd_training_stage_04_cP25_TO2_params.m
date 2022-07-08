@@ -11,8 +11,8 @@ stimInfo.adaptor_pip_dur    = 0.005;           % duration of individual adaptor 
 stimInfo.adaptor_level      = 60;               % mean level dB
 stimInfo.adaptor_bandwidth  = [5 60];        % adaptor bandwidth in kHz
 stimInfo.target_dur         = 0.5;              % target duration in s
-stimInfo.target_level       = 60;               % mean level dB
-stimInfo.target_ILDs        = [-30,30];        % ILD of target
+stimInfo.target_level       = 30;               % mean level dB
+stimInfo.target_ILDs        = [-60,60];        % ILD of target
 stimInfo.target_bandwidth   = [5 60];        % target bandwidth in kHz
 stimInfo.envDur             = 0.005;            % duration of envelope in s
 stimInfo.stimFunction       = 'spatialAdaptorGen'; % stimulus function
@@ -29,16 +29,16 @@ params.channel = [1 2 3 4];
 params.fs = 192e3;
 
 % specific task parameters
-params.rewardDuration_L = 116;
+params.rewardDuration_L = 116*2;
 params.rewardDuration_R = 92;
 params.rewardDuration_C = 82;
 params.holdTimeMin = 0;
-params.holdTimeMax = 0;
-params.timeoutDuration    = 0;
-params.centerDebounce = 25;
-params.centerRewardProb = 0.5;
+params.holdTimeMax = 10;
+params.timeoutDuration    = 4000;
+params.centerDebounce = 5;
+params.centerRewardProb = 0.25;
 params.waitTime = 500; % how much does the mouse wait after stim onset
-params.trialTypeRatios    = [50 50];
+params.trialTypeRatios    = [75 25];
 params.rewardContingency  = [1 2];
 params.timeOutContingency = [1 1];
 
