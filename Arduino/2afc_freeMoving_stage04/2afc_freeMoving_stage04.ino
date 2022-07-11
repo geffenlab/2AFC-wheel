@@ -187,7 +187,8 @@ void loop() {
           signed long stateTimer = 0;     // start timer at zero
           signed long tt = millis();       // Mark time at which timer started
           contact = true;            // Mouse in contact with center nosepoke
-
+          result input = check_inputs();
+          
           // run the timer until the mouse has been at the center for the hold time
           while ((stateTimer - tt) < totalWait) {
 
@@ -197,7 +198,7 @@ void loop() {
             result input = check_inputs();
             
             // if the mouse leaves the center longer than the debounce time then count as early departure
-            if (!(input.photoInput == "center") && !(input.photoInput == "center_audio") && onset && ((input.inputTimer - previous_input.inputTimer) > centerDebounce)) {
+            if (!(input.photoInput == "center") && !(input.photoInput == "center_audio") && ((input.inputTimer - previous_input.inputTimer) > centerDebounce)) {
               t = micros();
               Serial.print(trialStr);
               Serial.print("EARLYDEP ");
@@ -214,6 +215,7 @@ void loop() {
               Serial.print("ENDHOLDTIME ");
               Serial.println(t);
               holdTimeFinished = true;
+              result input = check_inputs();
 
             // signal when you detect stim onset
             } else if  (input.photoInput == "center_audio" && !onset) {  // mouse is at center and sound is on
@@ -223,6 +225,7 @@ void loop() {
               Serial.print("STIMON ");
               Serial.println(t);
               onset = true;
+              result input = check_inputs();
             }
           }
 
