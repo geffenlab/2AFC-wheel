@@ -197,7 +197,7 @@ void loop() {
             result input = check_inputs();
             
             // if the mouse leaves the center longer than the debounce time then count as early departure
-            if (!(input.photoInput == "center" || input.photoInput == "center_audio") && ((input.inputTimer - previous_input.inputTimer) > centerDebounce)) {
+            if (!(input.photoInput == "center") && !(input.photoInput == "center_audio") && onset && ((input.inputTimer - previous_input.inputTimer) > centerDebounce)) {
               t = micros();
               Serial.print(trialStr);
               Serial.print("EARLYDEP ");

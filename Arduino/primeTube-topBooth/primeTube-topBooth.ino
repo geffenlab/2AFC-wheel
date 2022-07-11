@@ -1,4 +1,4 @@
-const int pin = 10;
+const int pin = 8;
 int state = 48;
 int old_state = 0;
 

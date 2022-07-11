@@ -93,10 +93,9 @@ t = filtfilt(b,a,t);                                        % filter
 tL = conv(t,si.FILT_left,'same');
 tR = conv(t,si.FILT_right,'same');
 
-% Attenuate to baseline level (70 dB) and to adaptor level and then target
-% offsets
-left_att = si.adaptor_level - 70 + params.leftspk_adaptor_offset + params.leftspk_target_offset;
-right_att = si.adaptor_level - 70 + params.rightspk_adaptor_offset + params.rightspk_target_offset;
+% Attenuate to baseline level (70 dB) and then mean target level
+left_att = si.target_level - 70 + params.leftspk_adaptor_offset + params.leftspk_target_offset;
+right_att = si.target_level - 70 + params.rightspk_adaptor_offset + params.rightspk_target_offset;
 tL = tL.*10.^(left_att/20);
 tR = tR.*10.^(right_att/20);
 
