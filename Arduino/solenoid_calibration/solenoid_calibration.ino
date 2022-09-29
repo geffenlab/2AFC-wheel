@@ -1,5 +1,5 @@
-const int pin = 10;
-const int rewardTime = 170;
+const int pin = 9;
+const int rewardTime = 14;
 int state = 48; // zero on the keyboard
 int i = 1;
 void setup() {
@@ -13,8 +13,6 @@ void loop() {
   // put your main code here, to run repeatedly:
   if (Serial.available() > 0) {
     state = Serial.read();
-    Serial.read();
-    Serial.read();
   }
   if (state == 48) {
     digitalWrite(pin, LOW);

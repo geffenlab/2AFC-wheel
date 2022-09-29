@@ -191,8 +191,8 @@ while cnt < 2000
             newTrial = 1;
             correctionTrial = 0;
             if giveTO==1
-                correctionTrial = 1;
-                newTrial = 0;
+                correctionTrial = 0;
+                newTrial = 1;
                 ctCounter = ctCounter + 1;
                 PsychPortAudio('Stop',s,2);         % the 2 means stop asap (http://psychtoolbox.org/docs/PsychPortAudio-Stop)
                 PsychPortAudio('FillBuffer',s,([noiseBurstL, noiseBurstR, zeros(size(noiseBurstL)), zeros(size(noiseBurstL))].*params.ampF)');
